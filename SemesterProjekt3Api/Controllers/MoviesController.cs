@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SemesterProjekt3Api.Database;
 using SemesterProjekt3Api.Model;
 
 namespace SemesterProjekt3Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovieController : ControllerBase
+    public class MoviesController : ControllerBase
     {
 
         private DbMovie _dbMovie = new DbMovie();
