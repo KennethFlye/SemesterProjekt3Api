@@ -10,13 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.29.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="Interfaces\" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.29.0" />
   </ItemGroup>
 
 </Project>
