@@ -6,11 +6,7 @@ namespace SemesterProjekt3Api.Database
     public class DBConnection
     {
         SqlConnection con;
-        static DBConnection dbConnection;
-        private static string server = "hildur.ucn.dk";
-        private static string database = "DMA-CSD-V222_10434661";
-        private static string userId = "DMA-CSD-V222_10434661";
-        private static string password = "Password1!";
+        static DBConnection? dbConnection;
         private string? connectionString;
 
 
@@ -72,11 +68,17 @@ namespace SemesterProjekt3Api.Database
             }
         }
 
-        public void ExecuteQuery(string query)
+        //Skal måske ikke være med?
+        /**
+         * public void ExecuteQuery(string query)
         {
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
         }
+         */
+
+
+
 
 
     }
