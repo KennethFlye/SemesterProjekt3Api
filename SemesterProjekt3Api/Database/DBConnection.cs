@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using Dapper;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace SemesterProjekt3Api.Database
@@ -67,6 +68,7 @@ namespace SemesterProjekt3Api.Database
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
 
         //Skal måske ikke være med?
         /**
