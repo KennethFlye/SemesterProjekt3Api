@@ -14,7 +14,7 @@ namespace SemesterProjekt3Api.Database
         string connectionString;
 
 
-        DBConnection()
+        private DBConnection()
         {
             connectionString = $"Server={server};Database={database};User Id={userId};Password={password};";
             con = new SqlConnection(connectionString);
@@ -70,7 +70,11 @@ namespace SemesterProjekt3Api.Database
             }
         }
 
-
+        public void ExecuteQuery(string query)
+        {
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.ExecuteNonQuery();
+        }
 
 
     }
