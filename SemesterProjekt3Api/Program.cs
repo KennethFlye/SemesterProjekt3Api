@@ -22,8 +22,8 @@ builder.Services.AddAuthentication(options =>
                 IssuerSigningKey = new SecurityHelper(builder.Configuration).GetSecurityKey(), 
                     ValidateIssuer = true, 
                     ValidateAudience = true, 
-                    ValidIssuer = "https://localhost:7155", 
-                    ValidAudience = "https://localhost:7155", 
+                    ValidIssuer = "https://localhost:7150", 
+                    ValidAudience = "https://localhost:7150", 
                     ValidateLifetime = true 
             }; 
         });
