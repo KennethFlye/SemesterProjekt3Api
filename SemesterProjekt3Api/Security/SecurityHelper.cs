@@ -3,10 +3,6 @@ using System.Text;
 
 namespace SemesterProjekt3Api.Security
 {
-    
-
- 
-    {
         public class SecurityHelper
     {
         private readonly IConfiguration _configuration;
