@@ -11,12 +11,14 @@ namespace SemesterProjekt3Api.Database
         private static string database = "DMA-CSD-V222_10434661";
         private static string userId = "DMA-CSD-V222_10434661";
         private static string password = "Password1!";
-        string connectionString;
+        private string? connectionString;
 
 
         private DBConnection()
         {
-            connectionString = $"Server={server};Database={database};User Id={userId};Password={password};";
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfiguration configuration = builder.Build();
+            connectionString = configuration.GetConnectionString("VestbjergBio");
             con = new SqlConnection(connectionString);
         }
 
