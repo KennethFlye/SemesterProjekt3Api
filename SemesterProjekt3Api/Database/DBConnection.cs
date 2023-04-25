@@ -8,7 +8,7 @@ namespace SemesterProjekt3Api.Database
         SqlConnection con;
         static DBConnection dbConnection;
         private static string server = "hildur.ucn.dk";
-        private static string database = "DATABASE_NAVN";
+        private static string database = "DMA-CSD-V222_10434661";
         private static string userId = "DMA-CSD-V222_10434661";
         private static string password = "Password1!";
         string connectionString;
