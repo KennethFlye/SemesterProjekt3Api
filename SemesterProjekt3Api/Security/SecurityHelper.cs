@@ -25,11 +25,11 @@ namespace SemesterProjekt3Api.Security
             return SIGNING_KEY;
         }
 
-        internal bool IsValidUsernameAndPassword(string username, string password)
+        public bool IsValidUsernameAndPassword(string username, string password)
         {
-            string allowedUsername = _configuration["AllowDesktopApp:Username"]; 
-            string allowedPassword = _configuration["AllowDesktopApp:Password"]; 
-            bool credentialsOk = (username.Equals(allowedUsername)) && (password.Equals(allowedPassword)); 
+            string allowedUsername = _configuration["AllowDesktopApp:Username"];
+            string allowedPassword = _configuration["AllowDesktopApp:Password"];
+            bool credentialsOk = (username.Equals(allowedUsername)) && (password.Equals(allowedPassword));
             return credentialsOk;
         }
     }

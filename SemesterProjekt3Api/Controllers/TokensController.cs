@@ -35,14 +35,6 @@ namespace SemesterProjekt3Api.Controllers
             }
         }
 
-        public bool IsValidUsernameAndPassword(string username, string password)
-        {
-            string allowedUsername = _configuration["AllowDesktopApp:Username"];
-            string allowedPassword = _configuration["AllowDesktopApp:Password"];
-            bool credentialsOk = (username.Equals(allowedUsername)) && (password.Equals(allowedPassword));
-            return credentialsOk;
-        }
-
         private string GenerateToken(string username, string grantType)
         {
             string tokenString;
