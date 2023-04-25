@@ -1,3 +1,4 @@
+using Dapper;
 using SemesterProjekt3Api.Database;
 using System.Data;
 using System.Data.SqlClient;
@@ -26,6 +27,8 @@ namespace DatabaseTests
 
             int result = (int)cmd.ExecuteScalar();
             Assert.AreEqual(5, result);
+
+            
         }
     }
 }
