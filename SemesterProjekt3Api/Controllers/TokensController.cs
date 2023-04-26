@@ -19,7 +19,7 @@ namespace SemesterProjekt3Api.Controllers
 
         [Route("/token")]
         [HttpPost] // Generate and return a JWT token
-        public IActionResult Create([FromForm] string username, string password, string grant_type)
+        public IActionResult Create([FromForm] string username, [FromForm]string password, [FromForm]string grant_type)
         {
             bool hasInput = ((!String.IsNullOrWhiteSpace(username)) && (!String.IsNullOrWhiteSpace(password)));
             // Only return JWT token if credentials are valid
