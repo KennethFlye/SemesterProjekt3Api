@@ -20,14 +20,12 @@ namespace ControllerTests
                 .AddJsonFile("appsettings.json", false, true)
                 .Build();
 
-            //var mockResult = new OkObjectResult();
-
             //Act - instantiate the constructor and call the method for creating tokens
             var tc = new TokensController(config);
 
             var result = tc.Create(username, password, grantType);
 
-            //Assert if Create returns 200 Ok
+            //Assert - if result is of type ObjectResult, thereby implying that IActionResult = 200 Ok
 
             Assert.IsType<ObjectResult>(result);
         }
@@ -50,9 +48,10 @@ namespace ControllerTests
 
             var result = tc.Create(username, password, grantType);
 
-            //Assert if Create returns 200 Ok
+            //Assert - whether or not the results are of the same instance
 
-            Assert.Equal(mockResult, result); //fails although the aassert result is correct - maybe object reference problems?
+            //Assert.Same(mockResult, result); //breaks although results are the same, may be a object location thing
+            Assert.IsType<BadRequestResult>(result);
         }
 
         [Theory]
