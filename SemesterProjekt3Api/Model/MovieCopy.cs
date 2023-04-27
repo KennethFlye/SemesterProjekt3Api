@@ -3,7 +3,7 @@
     public class MovieCopy
     {
 
-        public int Id { get; set; }
+        public int copyId { get; set; }
         public string Language { get; set; }
         public bool Is3D { get; set; }
         public double Price { get; set; }
