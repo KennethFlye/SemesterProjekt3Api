@@ -17,7 +17,7 @@ namespace SemesterProjekt3Api.Controllers
         public ActionResult Get(int showingId)
         {
 
-            Showing foundShowing = _dbShowing.GetShowingById(showingId);
+            Showing foundShowing = _dbShowing.GetShowingByShowingId(showingId);
 
             if(foundShowing == null)
             {
