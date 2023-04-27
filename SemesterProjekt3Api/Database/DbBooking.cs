@@ -24,7 +24,7 @@ namespace SemesterProjekt3Api.Database
                     timeOfPurchase = newBooking.TimeOfPurchase,
                     total = newBooking.Total,
                     phone = newBooking.CustomerPhone,
-                    showingId = newBooking.Showing.Id
+                    showingId = newBooking.Showing.showingId
                 });
             }
             catch (Exception)
