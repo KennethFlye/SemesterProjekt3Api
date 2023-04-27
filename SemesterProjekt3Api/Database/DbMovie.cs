@@ -20,15 +20,15 @@ namespace SemesterProjekt3Api.Database
             SqlConnection connection = dbConnection.GetConnection();
 
             foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
-
+/*
             foundCopies = connection.Query<MovieCopy>(_getMovieCopyQuery, (MovieCopy, foundInfos) =>
             {
-                for(int i = 0, i < foundInfos.Count; i++)
+                for(int i = 0; i < foundInfos.Count; i++)
                 {
 
                 }
             }).ToList();
-
+*/
             throw new NotImplementedException();
         }
 
