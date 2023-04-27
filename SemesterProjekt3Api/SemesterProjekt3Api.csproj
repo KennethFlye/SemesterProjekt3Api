@@ -13,4 +13,11 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
+	<!--added to make testing possible-->
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory> 
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 namespace DatabaseTests
 {
     [TestClass]
-    public class UnitTest1
+    public class TestDbConnection
     {
         [TestMethod]
         public void ConnectionOpenTest()
