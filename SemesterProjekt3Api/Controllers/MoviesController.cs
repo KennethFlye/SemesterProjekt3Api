@@ -32,7 +32,7 @@ namespace SemesterProjekt3Api.Controllers
         public ActionResult Get(int movieId)
         {
 
-            List<Showing> showings = _dbMovie.getShowingsByMovieId(movieId);
+            List<Showing> showings = _dbMovie.getShowingsByMovieInfoId(movieId);
 
             if(showings.Count == 0)
             {
