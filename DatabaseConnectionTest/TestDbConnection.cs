@@ -2,30 +2,36 @@ using SemesterProjekt3Api.Database;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace DatabaseTests
+namespace DatabaseConnectionTest
 {
-    [TestClass]
     public class TestDbConnection
     {
-        [TestMethod]
+        [Fact]
         public void ConnectionOpenTest()
         {
+            //Arrange
             DBConnection dbcon = DBConnection.GetInstance();
             SqlConnection con = dbcon.GetConnection();
 
-            Assert.AreEqual(ConnectionState.Open, con.State);
+            //Act
+
+            //Assert
+            Assert.Equal(ConnectionState.Open, con.State);
         }
 
-        [TestMethod]
+        [Fact]
         public void ConnectionHasAccesToDBTest()
         {
+            //Arrange
             DBConnection dbcon = DBConnection.GetInstance();
             SqlConnection con = dbcon.GetConnection();
 
+            //Act
             SqlCommand cmd = new SqlCommand("select seatNumber from seat where seatId = 10", con);
-
             int result = (int)cmd.ExecuteScalar();
-            Assert.AreEqual(5, result);
+
+            //Assert
+            Assert.Equal(5, result);
         }
     }
 }
