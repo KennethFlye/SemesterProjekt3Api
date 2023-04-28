@@ -15,7 +15,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-Console.WriteLine("bobby tables was here");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
