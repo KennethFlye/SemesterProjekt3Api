@@ -18,6 +18,16 @@ namespace SemesterProjekt3Api.Database
         private string _getShowingsByMovieCopyIdsQuery = "SELECT showingId, startTime, isKidFriendly, showRoomId FROM Showing WHERE Showing.movieCopyId IN @Ids";
         private string _getCopyIdAndShowRoomIdByShowingIdQuery = "SELECT movieCopyId, showRoomId FROM Showing WHERE showingId = @showingId";
 
+        internal List<MovieInfo> GetMovieInfos()
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            List<MovieInfo> foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
+
+            return foundInfos;
+        }
+
         internal List<MovieCopy> getMovies()
         {
 
