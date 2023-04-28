@@ -6,17 +6,23 @@ using SemesterProjekt3Api.Model;
 namespace ControllerTests
 {
 
-    public class TestBookingsController
+    public class TestBookingsController : IDisposable
     {
+
+        private BookingsController _bCtrl;
+
+        public TestBookingsController()
+        {
+            _bCtrl = new BookingsController();
+        }
 
         [Fact]
         public void TestGetSeats()
         {
             //Arrange
-            var bctrl = new BookingsController();
 
             //Act
-            var result = bctrl.Get();
+            var result = _bCtrl.Get();
 
             //Assert
             Assert.IsType<OkObjectResult>(result); //evt check for all returns
@@ -28,11 +34,10 @@ namespace ControllerTests
         public void TestPostNewBooking()
         {
             //Arrange
-            var newBooking = new Booking();
-            var bctrl = new BookingsController();
+            var newBooking = new Booking(); //only used once therefore not in constructor
 
             //Act
-            var result = bctrl.Post(newBooking);
+            var result = _bCtrl.Post(newBooking);
 
             //Assert
             Assert.IsType<CreatedResult>(result);
@@ -47,5 +52,11 @@ namespace ControllerTests
         //    return testBookings[x];
         //}
         ////OR USE https://hamidmosalla.com/2017/02/25/xunit-theory-working-with-inlinedata-memberdata-classdata/
+
+        public void Dispose()
+        {
+            _bCtrl = null;
+        }
+
     }
 }

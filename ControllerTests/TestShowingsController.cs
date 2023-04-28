@@ -4,8 +4,15 @@ using SemesterProjekt3Api.Controllers;
 namespace ControllerTests
 {
 
-    public class TestShowingsController
+    public class TestShowingsController : IDisposable
     {
+
+        private ShowingsController _sCtrl;
+
+        public TestShowingsController()
+        {
+            _sCtrl = new ShowingsController();
+        }
 
         [Theory]
         [InlineData(-1)]
@@ -14,10 +21,9 @@ namespace ControllerTests
         public void TestGetShowingsById(int showingId)
         {
             //Arrange
-            var showingsController = new ShowingsController();
-
+            
             //Act
-            var result = showingsController.Get(showingId);
+            var result = _sCtrl.Get(showingId);
 
             //Assert
             if(result == null || showingId < 0 /*maybe redundent*/)
@@ -28,6 +34,11 @@ namespace ControllerTests
             {
                 Assert.IsType<OkObjectResult>(result);
             }
+        }
+        
+        public void Dispose()
+        {
+            _sCtrl = null;
         }
     }
 }
