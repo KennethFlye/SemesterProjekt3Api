@@ -41,6 +41,7 @@ namespace SemesterProjekt3Api.Controllers
 
             List<Showing> showings = _dbMovie.getShowingsByMovieInfoId(movieId);
 
+
             if(showings.Count == 0)
             {
                 return NotFound();

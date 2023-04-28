@@ -9,7 +9,6 @@ namespace SemesterProjekt3Api.Database
 
         //private string _getShowingByShowingIdQuery = "SELECT showingId, startTime, isKidFriendly FROM Showing WHERE showingId = @insertedShowingId";
         //private string _getCopyIdAndShowRoomIdByShowingIdQuery = "SELECT movieCopyId, showRoomId FROM Showing WHERE showingId = @insertedShowingId";
-        //Kigge på at kunne gøre de to nedenunder i en i stedet for to
         //private string _getMovieCopyByCopyIdQuery = "SELECT copyId, language, is3D, price FROM MovieCopy WHERE copyId = @copyId";
         //private string _getMovieInfoByCopyIdQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate FROM MovieInfo, MovieCopy WHERE copyId = @copyId AND infoId = movieInfoId";
         //private string _getShowRoomByShowRoomIdQuery = "SELECT roomNumber, capacity FROM ShowRoom WHERE roomNumber = @roomNumber";
