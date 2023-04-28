@@ -35,6 +35,14 @@ namespace SemesterProjekt3Api.Database
             SqlConnection connection = dbConnection.GetConnection();
 
             List<MovieInfo> foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
+
+            if(foundInfos.Count == 0 )
+            {
+                //Exception?
+            }
+
+            
+
             List<MovieCopy> foundCopies = connection.Query<MovieCopy>(_getMovieCopyQuery).ToList();
 
             //https://www.learndapper.com/parameters
