@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using Dapper;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace SemesterProjekt3Api.Database
@@ -6,17 +7,15 @@ namespace SemesterProjekt3Api.Database
     public class DBConnection
     {
         SqlConnection con;
-        static DBConnection dbConnection;
-        private static string server = "hildur.ucn.dk";
-        private static string database = "DMA-CSD-V222_10434661";
-        private static string userId = "DMA-CSD-V222_10434661";
-        private static string password = "Password1!";
-        string connectionString;
+        static DBConnection? dbConnection;
+        private string? connectionString;
 
 
         private DBConnection()
         {
-            connectionString = $"Server={server};Database={database};User Id={userId};Password={password};";
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfiguration configuration = builder.Build();
+            connectionString = configuration.GetConnectionString("VestbjergBio");
             con = new SqlConnection(connectionString);
         }
 
@@ -70,11 +69,18 @@ namespace SemesterProjekt3Api.Database
             }
         }
 
-        public void ExecuteQuery(string query)
+
+        //Skal måske ikke være med?
+        /**
+         * public void ExecuteQuery(string query)
         {
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.ExecuteNonQuery();
         }
+         */
+
+
+
 
 
     }
