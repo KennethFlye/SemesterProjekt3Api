@@ -24,8 +24,15 @@ namespace SemesterProjekt3Api.Controllers
             }
 
             return Ok(movieCopies);
-
         }
+
+        [HttpGet]
+        [Route("infos")]
+        public ActionResult GetInfos()
+        {
+            return Ok(_dbMovie.GetMovieInfos());
+        }
+
 
         [HttpGet]
         [Route("{movieId}/showings")]
