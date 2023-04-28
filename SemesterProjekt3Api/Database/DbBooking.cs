@@ -8,6 +8,9 @@ namespace SemesterProjekt3Api.Database
 {
     public class DbBooking
     {
+        private string _selectBookingByIdQuery = "select * from Booking where bookingId = @bookingId";
+
+
         public void AddBooking(Booking newBooking)
         {
             using (var scopeTransaction = new TransactionScope())
@@ -47,8 +50,25 @@ namespace SemesterProjekt3Api.Database
                 {
 
                 }
-
             }
+        }
+
+        internal Booking GetBookingById(int _bookingId)
+        {
+            DBConnection dbc = DBConnection.GetInstance();
+            SqlConnection sqlConnection = dbc.GetConnection();
+
+            DbShowing _dbShowing = new();
+
+            Booking booking = sqlConnection.QueryFirst<Booking>(_selectBookingByIdQuery, new { BookingId = _bookingId });
+            int showingId = sqlConnection.QuerySingle<int>("select showingId from Booking where bookingId = @bookingId",new {bookingId = _bookingId});
+
+            booking.Showing = _dbShowing.GetShowingByShowingId(showingId);
+
+            string seatSql = "select * from Seat where seatId = ( select seatId from BookingSeat where bookingId = @id)";
+            booking.BookedSeats = sqlConnection.Query<Seat>(seatSql, new {id = booking.BookingId}).ToList();
+
+            return booking;
         }
 
         internal List<Seat> GetSeatsByShowingId(StringValues showingId)
