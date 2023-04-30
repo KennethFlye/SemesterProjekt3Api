@@ -1,4 +1,4 @@
-namespace PersonrestService {
+namespace SemesterProjekt3Api {
     public class WeatherForecast {
         public DateTime Date { get; set; }
 
