@@ -36,12 +36,12 @@ namespace SemesterProjekt3Api.Database
 
             List<MovieInfo> foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
 
-            if(foundInfos.Count == 0 )
+            if (foundInfos.Count == 0)
             {
                 //Exception?
             }
 
-            
+
 
             List<MovieCopy> foundCopies = connection.Query<MovieCopy>(_getMovieCopyQuery).ToList();
 
@@ -104,7 +104,7 @@ namespace SemesterProjekt3Api.Database
             var ids = copyIds.ToArray<int>();
 
             //Gem alle showings der har de CopyIDs som blev tilføjet til listen tidligere i en liste
-            List<Showing> foundShowings = connection.Query<Showing>(_getShowingsByMovieCopyIdsQuery, new {Ids = ids}).ToList();
+            List<Showing> foundShowings = connection.Query<Showing>(_getShowingsByMovieCopyIdsQuery, new { Ids = ids }).ToList();
 
             //For hver showing gøres dette
             foundShowings.ForEach(showing =>
@@ -120,7 +120,7 @@ namespace SemesterProjekt3Api.Database
                 bool copyFound = false;
                 bool showRoomFound = false;
 
-                for(int i = 0; i < foundCopies.Count && !copyFound; i++)
+                for (int i = 0; i < foundCopies.Count && !copyFound; i++)
                 {
                     //Find rigtig copy og tilføj til showing
                     if (foundCopies[i].copyId == movieCopyId)
@@ -130,7 +130,7 @@ namespace SemesterProjekt3Api.Database
                     }
                 }
 
-                for(int i = 0; i < foundShowRooms.Count && !showRoomFound; i++)
+                for (int i = 0; i < foundShowRooms.Count && !showRoomFound; i++)
                 {
                     //Find rigtig showRoom og tilføj til showing
                     if (foundShowRooms[i].RoomNumber == showRoomId)
@@ -138,7 +138,7 @@ namespace SemesterProjekt3Api.Database
                         showing.ShowRoom = foundShowRooms[i];
                         showRoomFound = true;
                     }
-                    
+
                 }
             });
             //Returner de fuldendte showings
