@@ -31,9 +31,15 @@ namespace SemesterProjekt3Api.Controllers
         [Route("booked/{showingId}")]
         public ActionResult GetBooked(int showingId)
         {
-
            List<Seat> foundSeats = _dbShowing.GetBookedSeats(showingId);
             return Ok(foundSeats);
+        }
+
+        [HttpGet]
+        [Route("seatTaken/{showingId}/{seatId}")]
+        public ActionResult GetBooked(int showingId, int seatId)
+        {
+            return Ok(_dbShowing.IsSeatTaken(showingId, seatId));
         }
 
 
