@@ -71,9 +71,14 @@ namespace SemesterProjekt3Api.Database
             return booking;
         }
 
-        internal List<Seat> GetSeatsByShowingId(StringValues showingId)
+        internal List<Seat> GetSeatsByShowingId(int showingId) //check if used, Gets all seats, also unbooked
         {
-            throw new NotImplementedException();
+            List<Seat> seats = new List<Seat>();
+            DBConnection dbc = DBConnection.GetInstance();
+            SqlConnection sqlConnection = dbc.GetConnection();
+            string sql = "select * from Seat where showRoomId = (select Showing.showRoomId from Showing where showingId = @id)";
+            seats = sqlConnection.Query<Seat>(sql, new {id = showingId}).ToList();
+            return seats;
         }
     }
 }

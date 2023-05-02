@@ -14,7 +14,7 @@ namespace SemesterProjekt3Api.Controllers
 
         [HttpGet]
         [Route("{showingId}")]
-        public ActionResult Get(int showingId)
+        public ActionResult GetShowingByShowingId(int showingId)
         {
 
             Showing foundShowing = _dbShowing.GetShowingByShowingId(showingId);
@@ -29,7 +29,7 @@ namespace SemesterProjekt3Api.Controllers
 
         [HttpGet]
         [Route("booked/{showingId}")]
-        public ActionResult GetBooked(int showingId)
+        public ActionResult GetBookedSeats(int showingId)
         {
            List<Seat> foundSeats = _dbShowing.GetBookedSeats(showingId);
             return Ok(foundSeats);
@@ -37,7 +37,7 @@ namespace SemesterProjekt3Api.Controllers
 
         [HttpGet]
         [Route("seatTaken/{showingId}/{seatId}")]
-        public ActionResult GetBooked(int showingId, int seatId)
+        public ActionResult GetIfSeatBooked(int showingId, int seatId)
         {
             return Ok(_dbShowing.IsSeatTaken(showingId, seatId));
         }

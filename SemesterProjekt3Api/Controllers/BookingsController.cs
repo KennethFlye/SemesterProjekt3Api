@@ -15,29 +15,12 @@ namespace SemesterProjekt3Api.Controllers
         private DbBooking _dbBooking = new DbBooking();
 
         [HttpGet]
-        [Route("seats")]
-        public ActionResult Get()
+        [Route("allSeats/{showingId}")]
+        public ActionResult GetSeats(int showingId)
         {
-
-            Request.Headers.TryGetValue("showingId", out var showingId);
-
-            if(showingId == 0)
-            {
-                //Ved ikke om det er den her der bør bruges?
-                return BadRequest();
-            }
-            else
-            {
-                List<Seat> seats = _dbBooking.GetSeatsByShowingId(showingId);
-
-                if(seats.Count == 0)
-                {
-                    return NotFound();
-                }
-                return Ok(seats);
-            }
-
+            return Ok(_dbBooking.GetSeatsByShowingId(showingId));   
         }
+
         [HttpGet]
         [Route("{bookingId}")]
         public ActionResult Get(int bookingId)
