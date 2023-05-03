@@ -41,6 +41,7 @@ namespace SemesterProjekt3Api.Controllers
             bool badThingsHappened = false;
             if (badThingsHappened)
             {
+                Console.WriteLine("Bad Thing happened!");
                 return BadRequest();
             }
             else
