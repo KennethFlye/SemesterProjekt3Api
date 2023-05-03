@@ -34,7 +34,7 @@ namespace SemesterProjekt3Api.Database
                         phone = newBooking.CustomerPhone,
                         sId = newBooking.Showing.showingId
                     });
-
+                    Console.WriteLine("Query single completed");
                     //Insert Seat
                     foreach (Seat seat in newBooking.BookedSeats)
                     {
@@ -46,12 +46,14 @@ namespace SemesterProjekt3Api.Database
                                 SeatId = seat.SeatId
                             });
                     }
+                    Console.WriteLine("For-each completed");
                     scopeTransaction.Complete();
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     Console.WriteLine("EXCEPTION HAPPENED!");
+                    Console.WriteLine(e.Message);
                 }
             }
         }

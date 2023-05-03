@@ -37,6 +37,7 @@ namespace SemesterProjekt3Api.Controllers
         [Route("")]
         public ActionResult Post([FromBody] Booking newBooking)
         {
+            Console.WriteLine("Post method called");
             // validate and save to database
             bool badThingsHappened = false;
             if (badThingsHappened)
