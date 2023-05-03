@@ -16,13 +16,17 @@ namespace ControllerTests
             _bCtrl = new BookingsController();
         }
 
-        [Fact]
-        public void TestGetSeats()
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(3)]
+        public void TestGetSeats(int showingId)
         {
             //Arrange
 
             //Act
-            var result = _bCtrl.Get();
+            var result = _bCtrl.GetSeats(showingId); //vi find the seats associated with a specifik showing
 
             //Assert
             Assert.IsType<OkObjectResult>(result); //evt check for all returns

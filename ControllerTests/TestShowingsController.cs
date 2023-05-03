@@ -23,7 +23,7 @@ namespace ControllerTests
             //Arrange
             
             //Act
-            var result = _sCtrl.Get(showingId);
+            var result = _sCtrl.GetShowingByShowingId(showingId);
 
             //Assert
             if(result == null || showingId < 0 /*maybe redundent*/)
