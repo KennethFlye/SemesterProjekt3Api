@@ -16,45 +16,38 @@ namespace SemesterProjekt3Api.Database
             using (var scopeTransaction = new TransactionScope())
             {
                 Console.WriteLine("Before try");
-                try
-                {
-                    Console.WriteLine("Start of try");
-                    DBConnection dbc = DBConnection.GetInstance();
-                    SqlConnection sqlConnection = dbc.GetConnection();
+                
+                Console.WriteLine("Start of try");
+                DBConnection dbc = DBConnection.GetInstance();
+                SqlConnection sqlConnection = dbc.GetConnection();
 
-                    int idReturn = 0;
-                    string sql = "INSERT INTO [Booking] (timeOfPurchase, total, customerPhone, showingId) OUTPUT INSERTED.bookingId VALUES (@timeOfPurchase, @total, @phone, @sId)";
-                    Console.WriteLine("ShowingID:" + newBooking.Showing.showingId);
-                    idReturn = sqlConnection.QuerySingle<int>(
-                    sql,
-                    new
-                    {
-                        timeOfPurchase = newBooking.TimeOfPurchase,
-                        total = newBooking.Total,
-                        phone = newBooking.CustomerPhone,
-                        sId = newBooking.Showing.showingId
-                    });
-                    Console.WriteLine("Query single completed");
-                    //Insert Seat
-                    foreach (Seat seat in newBooking.BookedSeats)
-                    {
-                        sqlConnection.Query(
-                            "INSERT INTO [BookingSeat] (bookingId, seatId) VALUES (@BookingId, @SeatId)",
-                            new
-                            {
-                                BookingId = idReturn,
-                                SeatId = seat.SeatId
-                            });
-                    }
-                    Console.WriteLine("For-each completed");
-                    scopeTransaction.Complete();
-
-                }
-                catch (Exception e)
+                int idReturn = 0;
+                string sql = "INSERT INTO [Booking] (timeOfPurchase, total, customerPhone, showingId) OUTPUT INSERTED.bookingId VALUES (@timeOfPurchase, @total, @phone, @sId)";
+                Console.WriteLine("ShowingID:" + newBooking.Showing.showingId);
+                idReturn = sqlConnection.QuerySingle<int>(
+                sql,
+                new
                 {
-                    Console.WriteLine("EXCEPTION HAPPENED!");
-                    Console.WriteLine(e.Message);
+                    timeOfPurchase = newBooking.TimeOfPurchase,
+                    total = newBooking.Total,
+                    phone = newBooking.CustomerPhone,
+                    sId = newBooking.Showing.showingId
+                });
+                Console.WriteLine("Query single completed");
+                //Insert Seat
+                foreach (Seat seat in newBooking.BookedSeats)
+                {
+                    sqlConnection.Query(
+                        "INSERT INTO [BookingSeat] (bookingId, seatId) VALUES (@BookingId, @SeatId)",
+                        new
+                        {
+                            BookingId = idReturn,
+                            SeatId = seat.SeatId
+                        });
                 }
+                Console.WriteLine("For-each completed");
+                scopeTransaction.Complete();
+
             }
         }
 
