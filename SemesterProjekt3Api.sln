@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemesterProjekt3Api", "SemesterProjekt3Api\SemesterProjekt3Api.csproj", "{3A4C5C3D-EE7F-4B3C-B2BB-8FC7CF1C54A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller.Tests", "ControllerTests\Controller.Tests.csproj", "{B55EFC66-C3F2-4D87-B810-D1E292C55130}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Tests", "DatabaseConnectionTest\Database.Tests.csproj", "{7AD9A629-2EC5-4AC1-A371-11AD0FC75BD4}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{3A4C5C3D-EE7F-4B3C-B2BB-8FC7CF1C54A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A4C5C3D-EE7F-4B3C-B2BB-8FC7CF1C54A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A4C5C3D-EE7F-4B3C-B2BB-8FC7CF1C54A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B55EFC66-C3F2-4D87-B810-D1E292C55130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B55EFC66-C3F2-4D87-B810-D1E292C55130}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B55EFC66-C3F2-4D87-B810-D1E292C55130}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B55EFC66-C3F2-4D87-B810-D1E292C55130}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7AD9A629-2EC5-4AC1-A371-11AD0FC75BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7AD9A629-2EC5-4AC1-A371-11AD0FC75BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AD9A629-2EC5-4AC1-A371-11AD0FC75BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
