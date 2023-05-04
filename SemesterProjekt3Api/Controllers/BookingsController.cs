@@ -25,11 +25,13 @@ namespace SemesterProjekt3Api.Controllers
         [Route("{bookingId}")]
         public ActionResult Get(int bookingId)
         {
+            //booking foundbooking = _bookinglogic.get....(id)
+            //if foundbooking!= null
+            //return ok(foundbooking)
+            //else return other error(bookingid?)
+            
             Booking returnBooking = _dbBooking.GetBookingById(bookingId);
-
-            //if(returnBooking == null) Fjernet fordi det er ui'ens ansvar at se dette
-              //  return NotFound();
-
+            
             return Ok(returnBooking);
         }
 

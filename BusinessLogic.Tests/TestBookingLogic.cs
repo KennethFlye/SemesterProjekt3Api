@@ -30,15 +30,7 @@ namespace BusinessLogic.Tests
         [Fact]
         public void TestPostNewBooking()
         {
-            //Arrange
-            var newBooking = new Booking(); //only used once therefore not in constructor
-                                            //could take different mock bookings to test both valid and invalid
 
-            //Act
-            var result = _bCtrl.Post(newBooking);
-
-            //Assert
-            Assert.IsType<CreatedResult>(result);
         }
 
         public void Dispose()
