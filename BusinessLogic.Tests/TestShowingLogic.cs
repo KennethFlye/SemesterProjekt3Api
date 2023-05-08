@@ -73,11 +73,11 @@ namespace BusinessLogic.Tests
 
             if (result != null)
             {
-                Assert.Equal(showingId, result.showingId);
+                Assert.Equal(showingId, result.ShowingId);
             }
             else
             {
-                Assert.Throws<InvalidOperationException>(() => result); //OBS implement - things may only be catched
+                Assert.Throws<InvalidOperationException>(() => result);
             }
         }
 
