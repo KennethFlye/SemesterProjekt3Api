@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SemesterProjekt3Api.Database;
+using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
 
 namespace SemesterProjekt3Api.Controllers
@@ -10,27 +10,45 @@ namespace SemesterProjekt3Api.Controllers
     public class MoviesController : ControllerBase
     {
 
-        private DbMovie _dbMovie = new DbMovie();
+        private MovieLogic _movieLogic = new MovieLogic();
 
         [HttpGet]
         public ActionResult Index()
         {
-
-            List<MovieCopy> movieCopies = _dbMovie.getMovies();
-
-            if(movieCopies.Count == 0)
+            List<MovieCopy> movieCopiesList = _movieLogic.GetMovieCopyList();
+            
+            //Could also be made into a method for itself, takinga generic list as param, to keep code short and DRY
+            if(movieCopiesList.Count > 0)
+            {
+                return Ok(movieCopiesList);
+            }
+            else if(movieCopiesList.Count < 1)
             {
                 return NotFound();
             }
-
-            return Ok(movieCopies);
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         [Route("infos")]
         public ActionResult GetInfos()
         {
-            return Ok(_dbMovie.GetMovieInfos());
+            List<MovieInfo> movieInfoList = _movieLogic.GetMovieInfoList();
+            if(movieInfoList.Count > 0)
+            {
+                return Ok(movieInfoList);
+            }
+            else if(movieInfoList.Count < 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
 
@@ -38,18 +56,19 @@ namespace SemesterProjekt3Api.Controllers
         [Route("{movieId}/showings")]
         public ActionResult Get(int movieId)
         {
-
-            List<Showing> showings = _dbMovie.getShowingsByMovieInfoId(movieId);
-
-
-            if(showings.Count == 0)
+            List<Showing> showingsList = _movieLogic.GetShowingsByMovieInfoId(movieId);
+            if(showingsList.Count > 0)
             {
-                return NotFound();
+                return Ok(showingsList);
             }
-
-            return Ok(showings);
-
+            else if(showingsList.Count < 1)
+            {
+                return NotFound(showingsList); //or movieinfoID
+            }
+            else
+            {
+                return BadRequest(); //maybe also take param to show exception?
+            }
         }
-
     }
 }

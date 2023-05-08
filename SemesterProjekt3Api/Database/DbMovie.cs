@@ -28,7 +28,7 @@ namespace SemesterProjekt3Api.Database
             return foundInfos;
         }
 
-        internal List<MovieCopy> getMovies()
+        internal List<MovieCopy> GetMovieCopies()
         {
 
             DBConnection dbConnection = DBConnection.GetInstance();
@@ -65,7 +65,7 @@ namespace SemesterProjekt3Api.Database
             return foundCopies;
         }
 
-        internal List<Showing> getShowingsByMovieInfoId(int movieId)
+        internal List<Showing> GetShowingsByMovieInfoId(int movieId)
         {
             DBConnection dbConnection = DBConnection.GetInstance();
             SqlConnection connection = dbConnection.GetConnection();
