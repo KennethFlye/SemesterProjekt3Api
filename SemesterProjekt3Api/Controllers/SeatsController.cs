@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SemesterProjekt3Api.Database;
+using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
 
 namespace SemesterProjekt3Api.Controllers
@@ -9,7 +9,7 @@ namespace SemesterProjekt3Api.Controllers
     public class SeatsController : Controller
     {
 
-        private DbSeat _dbSeat = new DbSeat();
+        private SeatLogic _seatLogic = new SeatLogic();
 
         public IActionResult Index()
         {
@@ -20,14 +20,15 @@ namespace SemesterProjekt3Api.Controllers
         [Route("{seatId}")]
         public ActionResult Get(int seatId)
         {
-            Seat seat = _dbSeat.getSeat(seatId);
-
-            if (seat == null)
+            Seat foundSeat = _seatLogic.GetSeatBySeatId(seatId);
+            if(foundSeat != null)
             {
-                return NotFound();
+                return Ok(foundSeat);
             }
-
-            return Ok(seat);
+            else
+            {
+                return NotFound(foundSeat);
+            }
         }
     }
 }
