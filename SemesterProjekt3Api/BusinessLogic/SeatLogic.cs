@@ -12,7 +12,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             Seat? foundSeat = null;
             try
             {
-                foundSeat = _dbSeat.getSeat(seatId);
+                foundSeat = _dbSeat.GetSeat(seatId);
             }
             catch (InvalidOperationException)
             {

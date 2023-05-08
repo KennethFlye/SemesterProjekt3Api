@@ -10,7 +10,7 @@ namespace SemesterProjekt3Api.Database
 
         private string _getSeatBySeatIdQuery = "Select seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE seatId = @seatId";
 
-        internal Seat getSeat(int seatId)
+        internal Seat GetSeat(int seatId)
         {
 
             DBConnection dbConnection = DBConnection.GetInstance();
