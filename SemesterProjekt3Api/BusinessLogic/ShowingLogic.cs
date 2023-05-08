@@ -7,7 +7,7 @@ namespace SemesterProjekt3Api.BusinessLogic
     {
         private DbShowing _dbShowing = new DbShowing();
 
-        public bool isSeatTaken(int showingId, int seatId)
+        public bool IsSeatTaken(int showingId, int seatId)
         {
             bool isTaken = true; //default value set to true to make absolutely sure nothing is double booked
             try

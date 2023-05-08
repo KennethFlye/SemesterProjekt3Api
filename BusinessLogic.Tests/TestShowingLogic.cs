@@ -21,13 +21,12 @@ namespace BusinessLogic.Tests
         public void TestIsSeatTaken(int showingId, int seatId)
         {
             //Arrange
-            Seat mockSeat = new Seat();
-            mockSeat.SeatNumber = seatId;
             
             //Act
-            
+            var result = _showingLogic.IsSeatTaken(showingId, seatId);
 
             //Assert
+            Assert.False(result);
             
         }
 
