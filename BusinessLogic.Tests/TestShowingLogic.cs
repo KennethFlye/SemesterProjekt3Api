@@ -63,6 +63,7 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(3)]
         public void TestGetShowingByShowingId(int showingId)
         {
             //Arrange

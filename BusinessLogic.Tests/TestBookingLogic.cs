@@ -59,21 +59,19 @@ namespace BusinessLogic.Tests
         public void TestGetSeatsByShowingId(int showingId)
         {
             //Arrange
-            Seat mockSeat = new Seat();
 
             //Act
             var result = _bookingLogic.GetSeatsById(showingId);
 
             //Assert - returns the correct object: either a Booking, or an error (null reference or invalidoperation)
-            if(result.Count > 0)
+            if (result.Count > 0)
             {
-                var firstHit = result.First(); //another act
                 Assert.NotEmpty(result);
-                //Assert.Equal(firstHit.GetType, mockSeat); //make a mockseat with a showroom number or something
+                Assert.IsType<Seat>(result[0]);
             }
-            else if(result.Count < 1)
+            else if (result.Count < 1)
             {
-                Assert.Empty(result); //maybe too simple
+                Assert.Empty(result);
             }
             else
             {

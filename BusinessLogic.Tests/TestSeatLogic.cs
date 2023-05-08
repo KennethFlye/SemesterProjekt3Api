@@ -25,8 +25,16 @@ namespace BusinessLogic.Tests
             //Act
             var result = _seatLogic.GetSeatBySeatId(seatId);
 
-            //Assert
-            Assert.Equal(seatId, result.SeatId);
+            if(seatId > 0)
+            {
+                //Assert
+                Assert.Equal(seatId, result.SeatId);
+            }
+            else
+            {
+                Assert.Null(result);
+                //Assert.Throws<NullReferenceException>(() => result);
+            }
         }
         
         public void Dispose()
