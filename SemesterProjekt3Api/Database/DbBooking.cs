@@ -15,15 +15,13 @@ namespace SemesterProjekt3Api.Database
         {
             using (var scopeTransaction = new TransactionScope())
             {
-                Console.WriteLine("Before try");
-                
-                Console.WriteLine("Start of try");
+
                 DBConnection dbc = DBConnection.GetInstance();
                 SqlConnection sqlConnection = dbc.GetConnection();
 
                 int idReturn = 0;
                 string sql = "INSERT INTO [Booking] (timeOfPurchase, total, customerPhone, showingId) OUTPUT INSERTED.bookingId VALUES (@timeOfPurchase, @total, @phone, @sId)";
-                Console.WriteLine("ShowingID:" + newBooking.Showing.showingId);
+               
                 idReturn = sqlConnection.QuerySingle<int>(
                 sql,
                 new
@@ -33,7 +31,7 @@ namespace SemesterProjekt3Api.Database
                     phone = newBooking.CustomerPhone,
                     sId = newBooking.Showing.showingId
                 });
-                Console.WriteLine("Query single completed");
+
                 //Insert Seat
                 foreach (Seat seat in newBooking.BookedSeats)
                 {
@@ -45,7 +43,7 @@ namespace SemesterProjekt3Api.Database
                             SeatId = seat.SeatId
                         });
                 }
-                Console.WriteLine("For-each completed");
+            
                 scopeTransaction.Complete();
 
             }
