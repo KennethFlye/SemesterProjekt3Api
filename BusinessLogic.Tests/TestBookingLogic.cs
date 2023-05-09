@@ -53,6 +53,15 @@ namespace BusinessLogic.Tests
             Assert.True(success);
 
             //OBS should also check for invalid bookings
+            //var throwsException = Record.Exception(success);
+            //if (!throwsException)
+            //{
+            //    Assert.True(success);
+            //}
+            //else
+            //{
+            //    Assert.Throws<SystemException>(sucess);
+            //}
 
         }
 
