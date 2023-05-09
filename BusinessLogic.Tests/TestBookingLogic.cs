@@ -1,5 +1,6 @@
 using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
+using System.Collections;
 using System.Numerics;
 using System.Security.Cryptography;
 using Xunit;
@@ -21,7 +22,7 @@ namespace BusinessLogic.Tests
         public void TestPostNewBooking()
         {
             //Arrange - make a mock booking
-            Booking mockBooking = new Booking();
+            Booking mockBooking = new Booking(); //Should be ClassData in best case scenario
 
             mockBooking.TimeOfPurchase = DateTime.Now;
             mockBooking.Total = 999;
@@ -70,6 +71,7 @@ namespace BusinessLogic.Tests
             {
                 //Assert
                 Assert.Equal(bookingId, result.BookingId);
+                //Could also assert that none of the columns are null
             }
             else
             {
@@ -112,4 +114,40 @@ namespace BusinessLogic.Tests
         }
 
     }
+
+    //public class MockBooking : IEnumerable<object[]>
+    //{
+    //    public IEnumerator<object[]> GetEnumerator()
+    //    {
+    //        yield return new object[] {
+    //            new Booking {
+    //                TimeOfPurchase = DateTime.Now,
+    //                Total = 999,
+    //                CustomerPhone = "50529894", //value lent from database
+    //                Showing = new Showing().ShowingId = 15,
+                    
+    //        //Showing mockShowing = new Showing();
+    //        //mockShowing.ShowingId = 15; //value lent from database
+
+    //        //mockBooking.Showing = mockShowing;
+    //        //mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
+
+    //        //Seat mockSeat1 = new Seat();
+    //        //Seat mockSeat2 = new Seat();
+    //        //mockSeat1.SeatId = 9;
+    //        //mockSeat2.SeatId = 10;
+
+    //        //List<Seat> mockSeatsList = new List<Seat>();
+    //        //mockSeatsList.Add(mockSeat1);
+    //        //mockSeatsList.Add(mockSeat2);
+
+    //        //mockBooking.BookedSeats = mockSeatsList;
+    //    } };
+    //    }
+
+    //    IEnumerator IEnumerable.GetEnumerator()
+    //    {
+    //        return GetEnumerator();
+    //    }
+    //}
 }
