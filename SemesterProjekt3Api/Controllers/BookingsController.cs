@@ -20,6 +20,7 @@ namespace SemesterProjekt3Api.Controllers
         [Route("")]
         public ActionResult Post([FromBody] Booking newBooking)
         {
+           
             bool success = _bookingLogic.AddBooking(newBooking);
             if (success)
             {
@@ -37,8 +38,11 @@ namespace SemesterProjekt3Api.Controllers
         public ActionResult Get(int bookingId)
         {
             Booking foundBooking = _bookingLogic.GetBookingById(bookingId);
+            
+            
             if (foundBooking != null)
             {
+                
                 return Ok(foundBooking);
             }
             else

@@ -7,23 +7,33 @@ namespace SemesterProjekt3Api.BusinessLogic
     {
 
         private DbBooking _dbBooking = new DbBooking();
-        
+
         public bool AddBooking(Booking booking)
         {
             bool success = false;
-            try
+            if (IsSeatsTaken(booking.Showing.showingId, booking.BookedSeats))
             {
-                _dbBooking.AddBooking(booking);
-                success = true; //always returns true now? make dbbooking return a bool
+
+                try
+                {
+                    _dbBooking.AddBooking(booking);
+                    success = true; //always returns true now? make dbbooking return a bool
+                }
+                catch (InvalidOperationException)
+                {
+                    success = false;
+                }
             }
-            catch (InvalidOperationException)
+            else
             {
                 success = false;
+                Console.WriteLine("av av av, hvor gør det ondt");
+
             }
             return success; //could also write method with 3 returns, one for succes, one for null and one for exception,
                             //and then let the controller return actionresults based on that
-
         }
+
 
         public Booking GetBookingById(int bookingId)
         {
@@ -54,5 +64,23 @@ namespace SemesterProjekt3Api.BusinessLogic
             return seatList;
 
         }
+        public bool IsSeatsTaken(int showingID, List<Seat> seats)
+        {
+            bool conflict = true;
+            ShowingLogic showLogic = new();
+            for (int i = 0; i < seats.Count() && conflict == true; i++)
+            {
+                if (showLogic.isSeatTaken(showingID, seats[i].SeatId))
+                {
+                    conflict = false;
+                }
+            }
+            return conflict;
+
+
+
+
+        }
     }
 }
+

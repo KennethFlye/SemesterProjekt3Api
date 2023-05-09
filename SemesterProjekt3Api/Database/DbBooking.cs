@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Primitives;
+using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
 using System.Data.SqlClient;
 using System.Transactions;
@@ -15,7 +16,7 @@ namespace SemesterProjekt3Api.Database
         {
             using (var scopeTransaction = new TransactionScope())
             {
-
+               
                 DBConnection dbc = DBConnection.GetInstance();
                 SqlConnection sqlConnection = dbc.GetConnection();
 
