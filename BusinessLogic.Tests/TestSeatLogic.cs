@@ -33,7 +33,6 @@ namespace BusinessLogic.Tests
             else
             {
                 Assert.Null(result);
-                //Assert.Throws<NullReferenceException>(() => result);
             }
         }
         
