@@ -1,5 +1,7 @@
 using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
+using System.Numerics;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace BusinessLogic.Tests
@@ -21,11 +23,33 @@ namespace BusinessLogic.Tests
             //Arrange - make a mock booking
             Booking mockBooking = new Booking();
 
-            //Act - try posting
-            var result = _bookingLogic.AddBooking(mockBooking);
+            mockBooking.TimeOfPurchase = DateTime.Now;
+            mockBooking.Total = 999;
+            mockBooking.CustomerPhone = "50529894"; //value lent from database
 
-            //Assert - see if it passes
-            Assert.True(result);
+            Showing mockShowing = new Showing();
+            mockShowing.ShowingId = 15; //value lent from database
+
+            mockBooking.Showing = mockShowing;
+            mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
+
+            Seat mockSeat1 = new Seat();
+            Seat mockSeat2 = new Seat();
+            mockSeat1.SeatId = 9;
+            mockSeat2.SeatId = 10;
+            
+            List<Seat> mockSeatsList = new List<Seat>();
+            mockSeatsList.Add(mockSeat1);
+            mockSeatsList.Add(mockSeat2);
+            
+            mockBooking.BookedSeats = mockSeatsList; //we cant add an empty list of seats to be booked
+
+
+            //Act - try posting
+            var success = _bookingLogic.AddBooking(mockBooking);
+
+            //Assert - see if it passes/that no exceptions are thrown
+            Assert.True(success);
 
             //OBS should also check for invalid bookings
 
@@ -37,21 +61,21 @@ namespace BusinessLogic.Tests
         [InlineData(1)]
         public void TestGetBookingByBookingId(int bookingId)
         {
-            ////Arrange - handled by the constructor in this case
+            //Arrange - handled by the constructor in this case
 
-            ////Act - call the method
-            //NullReferenceException exp = (NullReferenceException)Record.Exception(() => _bookingLogic.GetBookingById(bookingId));
-            //Assert.Equal("", exp.ToString());
+            //Act - call the method
+            var result = _bookingLogic.GetBookingById(bookingId);
 
-            ////Assert - returns either null or a booking
-            //if (exp == null)
-            //{
-            //    Assert.Equal(bookingId, _bookingLogic.GetBookingById(bookingId).BookingId);
-            //}
-            //else
-            //{
-            //    Assert.Throws<NullReferenceException>(() => _bookingLogic.GetBookingById(bookingId));
-            //}
+            if (result != null)
+            {
+                //Assert
+                Assert.Equal(bookingId, result.BookingId);
+            }
+            else
+            {
+                Assert.Null(result); //in case nothing was found we expect a null value to be returned
+                //Assert.Throws<>(() => result); //should really test if the correct exception is thrown when exceptions happen, but nothing is thrown
+            }
         }
 
         [Theory]
