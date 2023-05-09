@@ -40,7 +40,7 @@ namespace SemesterProjekt3Api.Database
                 return showing;
             }, new { insertedShowingId = showingId }, splitOn: "copyId, infoId, roomNumber");
 
-            Showing foundShowing = showingResult.First();
+            Showing foundShowing = showingResult.FirstOrDefault();
 
             foundShowing.ShowRoom.Seats = connection.Query<Seat>(_getSeatsByShowRoomId, new { roomNumber = foundShowing.ShowRoom.RoomNumber }).ToList();
 
