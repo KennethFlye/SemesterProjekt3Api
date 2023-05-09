@@ -32,9 +32,8 @@ namespace SemesterProjekt3Api.BusinessLogic
             {
                 foundBooking = _dbBooking.GetBookingById(bookingId);
             }
-            catch (InvalidOperationException ex) //or NullReferenceException or higher exception
+            catch (InvalidOperationException) //or NullReferenceException or higher exception
             {
-                throw new InvalidOperationException("an error occured", ex);
                 foundBooking = null;
             }
             return foundBooking;

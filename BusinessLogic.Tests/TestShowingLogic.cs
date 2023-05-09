@@ -77,7 +77,7 @@ namespace BusinessLogic.Tests
             }
             else
             {
-                Assert.Throws<InvalidOperationException>(() => result);
+                Assert.Throws<NullReferenceException>(() => result);
             }
         }
 

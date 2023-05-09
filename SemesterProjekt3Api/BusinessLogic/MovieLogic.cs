@@ -18,7 +18,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                infoList = null;
+                infoList = new List<MovieInfo>();
             }
             return infoList;
         }
@@ -32,21 +32,21 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                movieCopyList = null;
+                movieCopyList = new List<MovieCopy>();
             }
             return movieCopyList;
         }
 
         public List<Showing> GetShowingsByMovieInfoId(int movieInfoId)
         {
-            List<Showing>? foundShowingList = null;
+            List<Showing>? foundShowingList;
             try
             {
                 foundShowingList = _dbMovie.GetShowingsByMovieInfoId(movieInfoId);
             }
             catch (InvalidOperationException)
             {
-                foundShowingList = null;
+                foundShowingList = new List<Showing>(); //return an empty list
             }
             return foundShowingList;
         }

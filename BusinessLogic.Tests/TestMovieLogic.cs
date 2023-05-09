@@ -26,7 +26,7 @@ namespace BusinessLogic.Tests
             {
                 //Assert
                 Assert.NotEmpty(result);
-                Assert.IsType<MovieInfo>(result[0].GetType);
+                Assert.IsType<MovieInfo>(result[0]);
             }
             else if(result.Count < 1)
             {
@@ -49,7 +49,7 @@ namespace BusinessLogic.Tests
             {
                 //Assert
                 Assert.NotEmpty(result);
-                Assert.IsType<MovieCopy>(result[0].GetType);
+                Assert.IsType<MovieCopy>(result[0]);
             }
             else if (result.Count < 1)
             {
@@ -67,6 +67,7 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(4)]
         public void TestGetShowingsListByMovieInfoId(int movieInfoId)
         {
             //Arrange
