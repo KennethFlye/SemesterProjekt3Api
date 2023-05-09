@@ -42,7 +42,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             {
                 foundShowing = _dbShowing.GetShowingByShowingId(showingId);
             }
-            catch (NullReferenceException)
+            catch (InvalidOperationException)
             {
                 foundShowing = null;
             }
