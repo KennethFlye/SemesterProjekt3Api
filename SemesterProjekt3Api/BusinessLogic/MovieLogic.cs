@@ -9,7 +9,7 @@ namespace SemesterProjekt3Api.BusinessLogic
         private DbMovie _dbMovie = new DbMovie();
 
 
-        internal List<MovieInfo> GetMovieInfoList()
+        public List<MovieInfo> GetMovieInfoList()
         {
             List<MovieInfo>? infoList = null; //could make method generic to cover both info and copies
             try
@@ -23,7 +23,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             return infoList;
         }
 
-        internal List<MovieCopy> GetMovieCopyList()
+        public List<MovieCopy> GetMovieCopyList()
         {
             List<MovieCopy>? movieCopyList = null;
             try
@@ -37,7 +37,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             return movieCopyList;
         }
 
-        internal List<Showing> GetShowingsByMovieInfoId(int movieInfoId)
+        public List<Showing> GetShowingsByMovieInfoId(int movieInfoId)
         {
             List<Showing>? foundShowingList = null;
             try

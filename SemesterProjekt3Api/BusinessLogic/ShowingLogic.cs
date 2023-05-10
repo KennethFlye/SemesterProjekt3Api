@@ -7,7 +7,7 @@ namespace SemesterProjekt3Api.BusinessLogic
     {
         private DbShowing _dbShowing = new DbShowing();
 
-        internal bool IsSeatTaken(int showingId, int seatId)
+        public bool IsSeatTaken(int showingId, int seatId)
         {
             bool isTaken = true; //default value set to true to make absolutely sure nothing is double booked
             try
@@ -21,7 +21,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             return isTaken;
         }
 
-        internal List<Seat> GetBookedSeatsByShowingId(int showingId)
+        public List<Seat> GetBookedSeatsByShowingId(int showingId)
         {
             List<Seat>? bookedSeatsList = null;
             try
@@ -35,7 +35,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             return bookedSeatsList;
         }
 
-        internal Showing GetShowingByShowingId(int showingId)
+        public Showing GetShowingByShowingId(int showingId)
         {
             Showing? foundShowing = null;
             try

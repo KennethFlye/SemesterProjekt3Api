@@ -7,7 +7,7 @@ namespace SemesterProjekt3Api.BusinessLogic
     {
         private DbSeat _dbSeat = new DbSeat();
 
-        internal Seat GetSeatBySeatId(int seatId)
+        public Seat GetSeatBySeatId(int seatId)
         {
             Seat? foundSeat = null;
             try
