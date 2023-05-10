@@ -51,7 +51,7 @@ namespace SemesterProjekt3Api.Controllers
         public ActionResult GetIfSeatBooked(int showingId, int seatId)
         {
             //We are interested in both true and false values, so:
-            return Ok(_showingLogic.isSeatTaken(showingId, seatId));
+            return Ok(_showingLogic.IsSeatTaken(showingId, seatId));
         }
 
 

@@ -1,5 +1,9 @@
 using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
+using System.Collections;
+using System.Numerics;
+using System.Security.Cryptography;
+using Xunit;
 
 namespace BusinessLogic.Tests
 {
@@ -18,15 +22,46 @@ namespace BusinessLogic.Tests
         public void TestPostNewBooking()
         {
             //Arrange - make a mock booking
-            Booking mockBooking = new Booking();
+            Booking mockBooking = new Booking(); //Should be ClassData in best case scenario
+
+            mockBooking.TimeOfPurchase = DateTime.Now;
+            mockBooking.Total = 999;
+            mockBooking.CustomerPhone = "50529894"; //value lent from database
+
+            Showing mockShowing = new Showing();
+            mockShowing.ShowingId = 15; //value lent from database
+
+            mockBooking.Showing = mockShowing;
+            mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
+
+            Seat mockSeat1 = new Seat();
+            Seat mockSeat2 = new Seat();
+            mockSeat1.SeatId = 9;
+            mockSeat2.SeatId = 10;
+
+            List<Seat> mockSeatsList = new List<Seat>();
+            mockSeatsList.Add(mockSeat1);
+            mockSeatsList.Add(mockSeat2);
+
+            mockBooking.BookedSeats = mockSeatsList; //we cant add an empty list of seats to be booked
+
 
             //Act - try posting
-            var result = _bookingLogic.AddBooking(mockBooking);
+            var success = _bookingLogic.AddBooking(mockBooking);
 
-            //Assert - see if it passes
-            Assert.True(result);
+            //Assert - see if it passes/that no exceptions are thrown
+            Assert.True(success);
 
             //OBS should also check for invalid bookings
+            //var throwsException = Record.Exception(success);
+            //if (!throwsException)
+            //{
+            //    Assert.True(success);
+            //}
+            //else
+            //{
+            //    Assert.Throws<SystemException>(sucess);
+            //}
 
         }
 
@@ -41,14 +76,16 @@ namespace BusinessLogic.Tests
             //Act - call the method
             var result = _bookingLogic.GetBookingById(bookingId);
 
-            //Assert - returns either null or a booking
             if (result != null)
             {
+                //Assert
                 Assert.Equal(bookingId, result.BookingId);
+                //Could also assert that none of the columns are null
             }
             else
             {
-                Assert.Throws<InvalidOperationException>(() => result); //OBS implement - things may only be catched
+                Assert.Null(result); //in case nothing was found we expect a null value to be returned
+                //Assert.Throws<>(() => result); //should really test if the correct exception is thrown when exceptions happen, but nothing is thrown
             }
         }
 
@@ -56,24 +93,23 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(3)]
         public void TestGetSeatsByShowingId(int showingId)
         {
             //Arrange
-            Seat mockSeat = new Seat();
 
             //Act
             var result = _bookingLogic.GetSeatsById(showingId);
 
             //Assert - returns the correct object: either a Booking, or an error (null reference or invalidoperation)
-            if(result.Count > 0)
+            if (result.Count > 0)
             {
-                var firstHit = result.First(); //another act
                 Assert.NotEmpty(result);
-                //Assert.Equal(firstHit.GetType, mockSeat); //make a mockseat with a showroom number or something
+                Assert.IsType<Seat>(result[0]);
             }
-            else if(result.Count < 1)
+            else if (result.Count < 1)
             {
-                Assert.Empty(result); //maybe too simple
+                Assert.Empty(result);
             }
             else
             {
@@ -87,4 +123,40 @@ namespace BusinessLogic.Tests
         }
 
     }
+
+    //public class MockBooking : IEnumerable<object[]>
+    //{
+    //    public IEnumerator<object[]> GetEnumerator()
+    //    {
+    //        yield return new object[] {
+    //            new Booking {
+    //                TimeOfPurchase = DateTime.Now,
+    //                Total = 999,
+    //                CustomerPhone = "50529894", //value lent from database
+    //                Showing = new Showing().ShowingId = 15,
+
+    //        //Showing mockShowing = new Showing();
+    //        //mockShowing.ShowingId = 15; //value lent from database
+
+    //        //mockBooking.Showing = mockShowing;
+    //        //mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
+
+    //        //Seat mockSeat1 = new Seat();
+    //        //Seat mockSeat2 = new Seat();
+    //        //mockSeat1.SeatId = 9;
+    //        //mockSeat2.SeatId = 10;
+
+    //        //List<Seat> mockSeatsList = new List<Seat>();
+    //        //mockSeatsList.Add(mockSeat1);
+    //        //mockSeatsList.Add(mockSeat2);
+
+    //        //mockBooking.BookedSeats = mockSeatsList;
+    //    } };
+    //    }
+
+    //    IEnumerator IEnumerable.GetEnumerator()
+    //    {
+    //        return GetEnumerator();
+    //    }
+    //}
 }

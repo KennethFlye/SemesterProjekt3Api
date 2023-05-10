@@ -110,7 +110,7 @@ namespace SemesterProjekt3Api.Database
             foundShowings.ForEach(showing =>
             {
                 //Gemmer showingId'et for showing'en i en variabel
-                var parameterShowingId = new { showingId = showing.showingId };
+                var parameterShowingId = new { showingId = showing.ShowingId };
                 //Gemmer movieCopyId'et og showRoomId'et vha. showingId'et
                 var result = connection.Query(_getCopyIdAndShowRoomIdByShowingIdQuery, parameterShowingId).Single();
 

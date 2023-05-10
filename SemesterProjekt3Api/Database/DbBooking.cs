@@ -30,7 +30,7 @@ namespace SemesterProjekt3Api.Database
                     timeOfPurchase = newBooking.TimeOfPurchase,
                     total = newBooking.Total,
                     phone = newBooking.CustomerPhone,
-                    sId = newBooking.Showing.showingId
+                    sId = newBooking.Showing.ShowingId
                 });
 
                 //Insert Seat

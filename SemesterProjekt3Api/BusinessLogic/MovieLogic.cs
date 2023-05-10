@@ -18,7 +18,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                infoList = null;
+                infoList = new List<MovieInfo>(); //return an empty list
             }
             return infoList;
         }
@@ -32,7 +32,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                movieCopyList = null;
+                movieCopyList = new List<MovieCopy>();
             }
             return movieCopyList;
         }
@@ -46,7 +46,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                foundShowingList = null;
+                foundShowingList = new List<Showing>();
             }
             return foundShowingList;
         }

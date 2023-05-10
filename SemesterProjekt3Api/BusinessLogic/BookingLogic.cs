@@ -11,7 +11,7 @@ namespace SemesterProjekt3Api.BusinessLogic
         public bool AddBooking(Booking booking)
         {
             bool success = false;
-            if (IsSeatsTaken(booking.Showing.showingId, booking.BookedSeats))
+            if (IsSeatsTaken(booking.Showing.ShowingId, booking.BookedSeats))
             {
 
                 try
@@ -26,9 +26,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             else
             {
-                success = false;
-                Console.WriteLine("av av av, hvor gør det ondt");
-
+                success = false; //seats were already booked
             }
             return success; //could also write method with 3 returns, one for succes, one for null and one for exception,
                             //and then let the controller return actionresults based on that
@@ -59,7 +57,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             }
             catch (InvalidOperationException)
             {
-                seatList = null;
+                seatList = new List<Seat>();
             }
             return seatList;
 
@@ -70,7 +68,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             ShowingLogic showLogic = new();
             for (int i = 0; i < seats.Count() && conflict == true; i++)
             {
-                if (showLogic.isSeatTaken(showingID, seats[i].SeatId))
+                if (showLogic.IsSeatTaken(showingID, seats[i].SeatId))
                 {
                     conflict = false;
                 }
