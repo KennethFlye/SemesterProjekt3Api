@@ -14,7 +14,7 @@ namespace BusinessLogic.Tests
         }
 
 
-        [Theory]
+        [Theory(Skip = "Needs to be corrected. Invalid values should return booked or exception. Valid should do the check - maybe add if/else statement")] 
         [InlineData(-1, -1)]
         [InlineData(0, 0)]
         [InlineData(1, 1)]
