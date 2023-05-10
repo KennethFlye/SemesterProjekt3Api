@@ -11,7 +11,7 @@ namespace SemesterProjekt3Api.BusinessLogic
         public bool AddBooking(Booking booking)
         {
             bool success = false;
-            if (IsSeatsTaken(booking.Showing.showingId, booking.BookedSeats))
+            if (IsSeatsTaken(booking.Showing.ShowingId, booking.BookedSeats))
             {
 
                 try
@@ -70,7 +70,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             ShowingLogic showLogic = new();
             for (int i = 0; i < seats.Count() && conflict == true; i++)
             {
-                if (showLogic.isSeatTaken(showingID, seats[i].SeatId))
+                if (showLogic.IsSeatTaken(showingID, seats[i].SeatId))
                 {
                     conflict = false;
                 }
