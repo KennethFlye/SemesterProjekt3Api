@@ -118,5 +118,29 @@ namespace SemesterProjekt3Api.BusinessLogic
 
             return newCopyId;
         }
+
+        public bool UpdateMovieInfoInDatabase(MovieInfo updatedMovieInfo)
+        {
+            bool isComplete;
+            try
+            {
+                isComplete = _dbMovie.UpdateMovieInfoInDatabase(updatedMovieInfo);
+            }
+            catch (InvalidOperationException) { isComplete = false; }
+
+            return isComplete;
+        }
+
+        public bool UpdateMovieCopyInDatabase(MovieCopy updatedMovieCopy)
+        {
+            bool isComplete;
+            try
+            {
+                isComplete = _dbMovie.UpdateMovieCopyInDatabase(updatedMovieCopy);
+            }
+            catch (InvalidOperationException) { isComplete = false; }
+
+            return isComplete;
+        }
     }
 }

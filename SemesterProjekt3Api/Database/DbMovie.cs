@@ -24,6 +24,9 @@ namespace SemesterProjekt3Api.Database
         private string _insertMovieInfoQuery = @"INSERT INTO MovieInfo (title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing) VALUES (@Title, @Length, @Genre, @PgRating, @PremiereDate, @MovieUrl, @CurrentlyShowing) SELECT SCOPE_IDENTITY()";
         private string _insertMovieCopyQuery = @"INSERT INTO MovieCopy (language, is3D, price, movieinfoId) VALUES (@Language, @Is3D, @Price, @movieinfoId) SELECT SCOPE_IDENTITY()";
 
+        private string _updateMovieInfoQuery = "UPDATE MovieInfo SET title = @Title, length = @Length, genre = @Genre, pgRating = @PgRating, premiereDate = @PremiereDate, movieUrl = @MovieUrl, currentlyShowing = @CurrentlyShowing WHERE infoId = @InfoId";
+        private string _updateMovieCopyQuery = "UPDATE MovieCopy SET language = @Language, is3D = @Is3D, price = @Price, movieInfoId = @MovieInfoId WHERE copyId = @CopyId";
+
         internal List<MovieInfo> GetMovieInfos()
         {
             DBConnection dbConnection = DBConnection.GetInstance();
@@ -205,5 +208,31 @@ namespace SemesterProjekt3Api.Database
             return newCopyId;
         }
 
+        public bool UpdateMovieInfoInDatabase(MovieInfo updatedMovieInfo)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int rowsChanged = connection.Execute(_updateMovieInfoQuery, updatedMovieInfo);
+
+            return rowsChanged > 0;
+        }
+
+        public bool UpdateMovieCopyInDatabase(MovieCopy updatedMovieCopy)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int rowsChanged = connection.Execute(_updateMovieCopyQuery, new
+            {
+                Language = updatedMovieCopy.Language,
+                Is3D = updatedMovieCopy.Is3D,
+                Price = updatedMovieCopy.Price,
+                MovieInfoId = updatedMovieCopy.MovieType.infoId,
+                CopyId = updatedMovieCopy.copyId,
+            });
+
+            return rowsChanged > 0;
+        }
     }
 }

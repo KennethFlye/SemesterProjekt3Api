@@ -126,5 +126,33 @@ namespace SemesterProjekt3Api.Controllers
             }
             else { return BadRequest(); }
         }
+
+        [HttpPatch]
+        [Route("infos")]
+        public ActionResult PatchInfo([FromBody]MovieInfo updatedMovieInfo)
+        {
+            if (_movieLogic.UpdateMovieInfoInDatabase(updatedMovieInfo))
+            {
+                return Ok(updatedMovieInfo);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPatch]
+        [Route("copies")]
+        public ActionResult PatchCopy([FromBody]MovieCopy updatedMovieCopy)
+        {
+            if (_movieLogic.UpdateMovieCopyInDatabase(updatedMovieCopy))
+            {
+                return Ok(updatedMovieCopy);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }
