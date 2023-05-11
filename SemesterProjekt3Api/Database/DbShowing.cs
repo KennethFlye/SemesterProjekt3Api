@@ -10,7 +10,7 @@ namespace SemesterProjekt3Api.Database
         private string _getSeatsByShowRoomId = "SELECT seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE showRoomId = @roomNumber";
         private string _getSeatTaken = "select * from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
         private string _getShowingByShowingIdQuery = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.showingId = @insertedShowingId AND Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
-        private string _getAllShowings = "SELECT FROM";
+        private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, showRoomId, movieCopyId FROM Showing";
         private string _getSeatsByShowingId = "select BookingSeat.bookingId, seatId from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and Booking.showingId = @sId";
         private string _addNewShowing = "INSERT INTO [Showing] (startTime, isKidFriendly, showRoomId, movieCopyId) VALUES (@newStartTime, @newIsKidFriendly, @newShowRoomId, @newMovieCopyId)";
         private string _updateShowing = "UPDATE [Showing] SET startTime = @updatedStartTime, isKidFriendly = @updatedIsKidFriendly, showRoomId = @updatedShowRoomId, movieCopyId = @updatedMovieCopyId WHERE showingId = @showingIdToUpdate";

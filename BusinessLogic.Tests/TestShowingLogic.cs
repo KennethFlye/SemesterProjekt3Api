@@ -71,11 +71,11 @@ namespace BusinessLogic.Tests
 
             ShowRoom mockShowRoom = new ShowRoom();
             mockShowRoom.RoomNumber = 2;
-            mockShowing.ShowRoom.RoomNumber = mockShowRoom.RoomNumber;
+            mockShowing.ShowRoom = mockShowRoom;
 
-            MovieCopy mockMovieCopy = new MovieCopy(); //we may have to add a mock movieinfo
+            MovieCopy mockMovieCopy = new MovieCopy();
             mockMovieCopy.copyId = 4;
-            mockShowing.MovieCopy.copyId = mockMovieCopy.copyId;
+            mockShowing.MovieCopy = mockMovieCopy;
 
             //Act
             var result = _showingLogic.AddShowing(mockShowing);
@@ -150,7 +150,7 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(19)]
+        [InlineData(19)] //works once
         public void TestDeleteShowingByShowingId(int showingIdToDelete)
         {
             //Arrange
