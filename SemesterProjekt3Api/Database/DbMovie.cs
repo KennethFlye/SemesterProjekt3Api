@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Win32.SafeHandles;
+using SemesterProjekt3Api.Interfaces;
 using SemesterProjekt3Api.Model;
 using System.Data.SqlClient;
 
@@ -7,16 +8,21 @@ namespace SemesterProjekt3Api.Database
 {
     public class DbMovie
     {
-        private string _getMovieInfoQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate FROM MovieInfo";
+        private string _getMovieInfoQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieInfo";
         private string _getMovieCopyQuery = "SELECT copyId, language, is3D, price FROM MovieCopy";
         private string _getMovieInfoByCopyIdQuery = "SELECT movieinfoId FROM MovieCopy WHERE copyId = @copyId";
 
-        private string _getMovieInfoByInfoIdQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate FROM MovieInfo WHERE MovieInfo.infoId = @infoId";
+        private string _getMovieInfoByInfoIdQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieInfo WHERE MovieInfo.infoId = @infoId";
         private string _getMovieCopiesByInfoIdQuery = "SELECT copyId, language, is3D, price FROM MovieCopy WHERE MovieCopy.movieInfoId = @infoId";
         private string _getShowRoomsQuery = "SELECT roomNumber, capacity FROM ShowRoom";
         private string _getSeatsByShowRoomId = "SELECT seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE showRoomId = @showRoomId";
         private string _getShowingsByMovieCopyIdsQuery = "SELECT showingId, startTime, isKidFriendly, showRoomId FROM Showing WHERE Showing.movieCopyId IN @Ids";
         private string _getCopyIdAndShowRoomIdByShowingIdQuery = "SELECT movieCopyId, showRoomId FROM Showing WHERE showingId = @showingId";
+
+        private string _getMovieCopyByCopyIdQuery = "SELECT copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieCopy, MovieInfo WHERE copyId = @copyId AND MovieCopy.movieinfoId = MovieInfo.infoId";
+
+        private string _insertMovieInfoQuery = @"INSERT INTO MovieInfo (title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing) VALUES (@Title, @Length, @Genre, @PgRating, @PremiereDate, @MovieUrl, @CurrentlyShowing) SELECT SCOPE_IDENTITY()";
+        private string _insertMovieCopyQuery = @"INSERT INTO MovieCopy (language, is3D, price, movieinfoId) VALUES (@Language, @Is3D, @Price, @movieinfoId) SELECT SCOPE_IDENTITY()";
 
         internal List<MovieInfo> GetMovieInfos()
         {
@@ -144,5 +150,60 @@ namespace SemesterProjekt3Api.Database
             //Returner de fuldendte showings
             return foundShowings;
         }
+
+        public MovieInfo? GetMovieInfoById(int infoId)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            return connection.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, new {infoId = infoId}).First();
+        }
+
+        internal MovieCopy? GetMovieCopyById(int copyId)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            var movieResult = connection.Query<MovieCopy, MovieInfo, MovieCopy>(_getMovieCopyByCopyIdQuery, (movieCopy, movieInfo) =>
+            {
+                movieCopy.MovieType = movieInfo;
+                return movieCopy;
+            }, new { copyId = copyId }, splitOn: "infoId");
+
+            MovieCopy foundCopy = movieResult.FirstOrDefault();
+
+            return foundCopy;
+        }
+
+        public int AddMovieInfoToDatabase(MovieInfo newMovieInfo)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int newInfoId = 0;
+
+            newInfoId = connection.ExecuteScalar<int>(_insertMovieInfoQuery, newMovieInfo);
+
+            return newInfoId;
+        }
+
+        public int AddMovieCopyToDatabase(MovieCopy newMovieCopy)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int newCopyId = 0;
+
+            newCopyId = connection.QuerySingle<int>(_insertMovieCopyQuery, new
+            {
+                Language = newMovieCopy.Language,
+                Is3D = newMovieCopy.Is3D,
+                Price = newMovieCopy.Price,
+                movieinfoId = newMovieCopy.MovieType.infoId
+            });
+
+            return newCopyId;
+        }
+
     }
 }
