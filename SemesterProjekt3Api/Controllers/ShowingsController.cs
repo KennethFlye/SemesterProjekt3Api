@@ -24,7 +24,7 @@ namespace SemesterProjekt3Api.Controllers
             {
                 return BadRequest(); //internal server error
             }
-            
+
         }
 
         [HttpGet]
@@ -54,6 +54,36 @@ namespace SemesterProjekt3Api.Controllers
             else if (foundShowingsList.Count < 1)
             {
                 return NotFound();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut]
+        [Route("{showingId}")]
+        public ActionResult UpdateShowing(Showing showingToUpdate)
+        {
+            bool success = _showingLogic.UpdateSpecificShowing(showingToUpdate);
+            if (success)
+            {
+                return Ok(showingToUpdate);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete]
+        [Route("{showingId}")]
+        public ActionResult DeleteShowing(int showingId)
+        {
+            bool success = _showingLogic.DeleteShowingByShowingId(showingId);
+            if (success)
+            {
+                return NoContent(); //we dont receive anything when deleting
             }
             else
             {

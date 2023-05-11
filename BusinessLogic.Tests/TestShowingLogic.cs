@@ -1,4 +1,6 @@
-﻿using SemesterProjekt3Api.BusinessLogic;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
+using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
 
 namespace BusinessLogic.Tests
@@ -59,6 +61,29 @@ namespace BusinessLogic.Tests
             }
         }
 
+        [Fact]
+        public void TestAddShowing()
+        {
+            //Arrange
+            Showing mockShowing = new Showing();
+            mockShowing.StartTime = DateTime.Now;
+            mockShowing.IsKidFriendly = true;
+
+            ShowRoom mockShowRoom = new ShowRoom();
+            mockShowRoom.RoomNumber = 2;
+            mockShowing.ShowRoom.RoomNumber = mockShowRoom.RoomNumber;
+
+            MovieCopy mockMovieCopy = new MovieCopy(); //we may have to add a mock movieinfo
+            mockMovieCopy.copyId = 4;
+            mockShowing.MovieCopy.copyId = mockMovieCopy.copyId;
+
+            //Act
+            var result = _showingLogic.AddShowing(mockShowing);
+
+            //Assert
+            Assert.True(result);
+        }
+
         [Theory]
         [InlineData(-1)]
         [InlineData(0)]
@@ -81,6 +106,59 @@ namespace BusinessLogic.Tests
                 //Assert.Throws<InvalidOperationException>(() => result); //Should really test if the method throws the correct exception,
                 //but nothing is thrown and the system handles null values without problem
             }
+        }
+
+        [Fact]
+        public void TestGetAllShowings()
+        {
+            //Arrange
+
+            //Act
+            var result = _showingLogic.GetShowingsList();
+
+            if(result.Count > 0)
+            {
+                //Assert
+                Assert.NotEmpty(result);
+                Assert.IsType<Showing>(result[0]);
+            }
+            else if(result.Count < 1)
+            {
+                //Assert
+                Assert.Empty(result);
+            }
+            else
+            {
+                Assert.Null(result);
+            }
+        }
+
+        [Fact(Skip = "Implement when making mockShowing into classdata object")]
+        public void TestUpdateSpecificShowingByShowingId()
+        {
+            //Arrange
+            Showing mockShowing = new Showing(); //could reuse mock from addShowing
+
+            //Act
+            var result = _showingLogic.UpdateSpecificShowing(mockShowing);
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(19)]
+        public void TestDeleteShowingByShowingId(int showingIdToDelete)
+        {
+            //Arrange
+
+            //Act
+            var result = _showingLogic.DeleteShowingByShowingId(showingIdToDelete);
+
+            Assert.True(result);
         }
 
         public void Dispose()
