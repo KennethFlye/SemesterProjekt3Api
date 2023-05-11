@@ -92,7 +92,7 @@ namespace SemesterProjekt3Api.Database
                 DBConnection dbConnection = DBConnection.GetInstance();
                 SqlConnection sqlConnection = dbConnection.GetConnection();
 
-                success = sqlConnection.QuerySingle<bool>(_updateShowing, new
+                int rowsAffected = sqlConnection.Execute(_updateShowing, new
                 {
                     updatedStartTime = updatedShowing.StartTime,
                     updatedIsKidFriendly = updatedShowing.IsKidFriendly,
@@ -102,6 +102,10 @@ namespace SemesterProjekt3Api.Database
                     showingIdToUpdate = updatedShowing.ShowingId
                 });
                 
+                if(rowsAffected > 0)
+                {
+                    success = true;
+                }
                 scope.Complete();
             }
             return success;
@@ -115,7 +119,11 @@ namespace SemesterProjekt3Api.Database
                 DBConnection dbConnection = DBConnection.GetInstance();
                 SqlConnection sqlConnection = dbConnection.GetConnection();
 
-                success = sqlConnection.QuerySingle<bool>(_deleteShowingByShowingId, new { showingIdToDelete = showingId });
+                int rowsAffected = sqlConnection.Execute(_deleteShowingByShowingId, new { showingIdToDelete = showingId });
+                if(rowsAffected > 0)
+                {
+                    success = true;
+                }
                 scope.Complete();
             }
             return success;
