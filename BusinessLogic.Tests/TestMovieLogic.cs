@@ -93,6 +93,56 @@ namespace BusinessLogic.Tests
             }
         }
 
+        [Theory]
+        [InlineData(4)]
+        [InlineData(7)]
+        [InlineData(11)]
+        [InlineData(30)]
+        public void TestGetSpecificMovieInfo(int movieInfoId)
+        {
+            //Arrange
+
+
+            //Act
+            bool isComplete = _movieLogic.GetMovieInfoById(movieInfoId, out MovieInfo? foundInfo);
+
+            //Assert
+            Assert.True(isComplete);
+            Assert.NotNull(foundInfo);
+
+            Assert.True(foundInfo.infoId == movieInfoId);
+            Assert.False(foundInfo.Title.Equals(""));
+            Assert.True(foundInfo.Length != 0);
+            Assert.False(foundInfo.Genre.Equals(""));
+            Assert.False(foundInfo.PgRating.Equals(""));
+            Assert.True(foundInfo.PremiereDate != DateTime.MinValue);
+            Assert.False(foundInfo.MovieUrl.Equals(""));
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        public void TestGetSpecificMovieCopy(int movieCopyId)
+        {
+            //Arrange
+
+            //Act
+            bool isComplete = _movieLogic.GetMovieCopyById(movieCopyId, out MovieCopy? foundCopy);
+
+            //Assert
+            Assert.True(isComplete);
+            Assert.NotNull(foundCopy);
+
+            Assert.True(foundCopy.copyId == movieCopyId);
+            Assert.False(foundCopy.Language.Equals(""));
+            Assert.True(foundCopy.Price > 0);
+            Assert.NotNull(foundCopy.MovieType);
+        }
+
         public void Dispose()
         {
             _movieLogic = null;
