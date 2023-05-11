@@ -70,5 +70,61 @@ namespace SemesterProjekt3Api.Controllers
                 return BadRequest(); //maybe also take param to show exception?
             }
         }
+
+        [HttpGet]
+        [Route("infos/{infoId}")]
+        public ActionResult GetInfo(int infoId)
+        {
+            if(!_movieLogic.GetMovieInfoById(infoId, out MovieInfo? foundInfo))
+            {
+                return NotFound();
+            }
+
+            return Ok(foundInfo);
+        }
+
+        [HttpGet]
+        [Route("copies/{copyId}")]
+        public ActionResult GetCopy(int copyId)
+        {
+            if (!_movieLogic.GetMovieCopyById(copyId, out MovieCopy? foundCopy))
+            {
+                return NotFound();
+            }
+
+            return Ok(foundCopy);
+        }
+
+
+
+        [HttpPost]
+        [Route("infos")]
+        public ActionResult PostInfo([FromBody]MovieInfo newMovieInfo)
+        {
+            int newInfoId = _movieLogic.AddMovieInfoToDatabase(newMovieInfo);
+
+            if (newInfoId != 0)
+            {
+                newMovieInfo.infoId = newInfoId;
+                return CreatedAtAction(nameof(GetInfo), new { infoId = newInfoId }, newMovieInfo);
+
+            }
+            else { return BadRequest(); }
+        }
+
+        [HttpPost]
+        [Route("copies")]
+        public ActionResult PostCopy([FromBody]MovieCopy newMovieCopy)
+        {
+            int newCopyId = _movieLogic.AddMovieCopyToDatabase(newMovieCopy);
+
+            if(newCopyId != 0)
+            {
+                newMovieCopy.copyId = newCopyId;
+                return CreatedAtAction(nameof(GetCopy), new {copyId = newCopyId}, newMovieCopy);
+
+            }
+            else { return BadRequest(); }
+        }
     }
 }
