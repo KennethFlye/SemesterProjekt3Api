@@ -35,6 +35,21 @@ namespace SemesterProjekt3Api.BusinessLogic
             return bookedSeatsList;
         }
 
+        public bool AddShowing(Showing newShowing)
+        {
+            bool success = false;
+            try
+            {
+                success = _dbShowing.CreateShowing(newShowing);
+            }
+            catch(InvalidOperationException)
+            {
+                success = false;
+                //throw the exception istg
+            }
+            return success;
+        }
+
         public Showing GetShowingByShowingId(int showingId)
         {
             Showing? foundShowing = null;
@@ -49,6 +64,48 @@ namespace SemesterProjekt3Api.BusinessLogic
             return foundShowing;
         }
 
+        public List<Showing> GetShowingsList()
+        {
+            List<Showing>? foundShowingsList = null;
+            try
+            {
+                foundShowingsList = _dbShowing.GetAllShowings();
+            }
+            catch (InvalidOperationException)
+            {
+                //maybe nullreferenceexception
+                foundShowingsList = new List<Showing>(); //return an empty list
+            }
+            return foundShowingsList;
+        }
+
+        public bool UpdateSpecificShowing(Showing showingToUpdate)
+        {
+            bool success = false;
+            try
+            {
+                success = _dbShowing.UpdateShowing(showingToUpdate);
+            }
+            catch (InvalidOperationException)
+            {
+                success = false;
+            }
+            return success;
+        }
+
+        public bool DeleteShowingByShowingId(int showingIdToDelete)
+        {
+            bool success = false;
+            try
+            {
+                success = _dbShowing.DeleteShowingByShowingId(showingIdToDelete);
+            }
+            catch (InvalidOperationException)
+            {
+                success = false;
+            }
+            return success;
+        }
       
     }
 }

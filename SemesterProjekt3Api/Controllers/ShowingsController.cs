@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
 
@@ -12,12 +11,28 @@ namespace SemesterProjekt3Api.Controllers
 
         private ShowingLogic _showingLogic = new ShowingLogic();
 
+        [HttpPost]
+        [Route("")] //route api/showings
+        public ActionResult PostNewShowing(Showing newShowing)
+        {
+            bool success = _showingLogic.AddShowing(newShowing);
+            if (success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(); //internal server error
+            }
+            
+        }
+
         [HttpGet]
         [Route("{showingId}")]
         public ActionResult GetShowingByShowingId(int showingId)
         {
             Showing foundShowing = _showingLogic.GetShowingByShowingId(showingId);
-            if(foundShowing != null)
+            if (foundShowing != null)
             {
                 return Ok(foundShowing);
             }
@@ -28,15 +43,34 @@ namespace SemesterProjekt3Api.Controllers
         }
 
         [HttpGet]
+        [Route("")]
+        public ActionResult GetAllShowings()
+        {
+            List<Showing> foundShowingsList = _showingLogic.GetShowingsList();
+            if (foundShowingsList.Count > 0)
+            {
+                return Ok(foundShowingsList);
+            }
+            else if (foundShowingsList.Count < 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         [Route("booked/{showingId}")]
         public ActionResult GetBookedSeats(int showingId)
         {
             List<Seat> bookedSeatsList = _showingLogic.GetBookedSeatsByShowingId(showingId);
-            if(bookedSeatsList.Count > 0)
+            if (bookedSeatsList.Count > 0)
             {
                 return Ok(bookedSeatsList);
             }
-            else if(bookedSeatsList.Count < 1)
+            else if (bookedSeatsList.Count < 1)
             {
                 return NotFound(showingId); //there are no booked seats for showingId
             }
