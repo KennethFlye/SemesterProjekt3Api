@@ -3,11 +3,11 @@
     public interface ICRUD<T>
     {
 
-        void Create(T entity);
+        bool Create(T entity);
         T Get(int id);
         IEnumerable<T> GetAll();
-        void Update(T entity);
-        void Delete(int id);
+        bool Update(T entity);
+        bool Delete(int id);
 
     }
 }
