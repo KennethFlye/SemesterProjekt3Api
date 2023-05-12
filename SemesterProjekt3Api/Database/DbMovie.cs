@@ -27,6 +27,9 @@ namespace SemesterProjekt3Api.Database
         private string _updateMovieInfoQuery = "UPDATE MovieInfo SET title = @Title, length = @Length, genre = @Genre, pgRating = @PgRating, premiereDate = @PremiereDate, movieUrl = @MovieUrl, currentlyShowing = @CurrentlyShowing WHERE infoId = @InfoId";
         private string _updateMovieCopyQuery = "UPDATE MovieCopy SET language = @Language, is3D = @Is3D, price = @Price, movieInfoId = @MovieInfoId WHERE copyId = @CopyId";
 
+        private string _deleteMovieInfoByIdQuery = "DELETE FROM MovieInfo WHERE infoId = @infoId";
+        private string _deleteMovieCopyByIdQuery = "DELETE FROM MovieCopy WHERE copyId = @copyId";
+
         internal List<MovieInfo> GetMovieInfos()
         {
             DBConnection dbConnection = DBConnection.GetInstance();
@@ -231,6 +234,26 @@ namespace SemesterProjekt3Api.Database
                 MovieInfoId = updatedMovieCopy.MovieType.infoId,
                 CopyId = updatedMovieCopy.copyId,
             });
+
+            return rowsChanged > 0;
+        }
+
+        public bool DeleteMovieInfoById(int movieInfoId)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int rowsChanged = connection.Execute(_deleteMovieInfoByIdQuery, new { infoId = movieInfoId });
+
+            return rowsChanged > 0;
+        }
+
+        public bool DeleteMovieCopyById(int movieCopyId)
+        {
+            DBConnection dbConnection = DBConnection.GetInstance();
+            SqlConnection connection = dbConnection.GetConnection();
+
+            int rowsChanged = connection.Execute(_deleteMovieCopyByIdQuery, new { copyId = movieCopyId });
 
             return rowsChanged > 0;
         }
