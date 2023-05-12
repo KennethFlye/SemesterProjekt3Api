@@ -4,7 +4,7 @@ using SemesterProjekt3Api.Model;
 
 namespace SemesterProjekt3Api.Controllers
 {
-    public class ShowRoomsController : Controller
+    public class ShowRoomsController : ControllerBase
     {
         private ShowRoomLogic _showRoomLogic;
 
