@@ -5,7 +5,7 @@
 
         bool Create(T entity);
         T Get(int id);
-        IEnumerable<T> GetAll();
+        List<T> GetAll();
         bool Update(T entity);
         bool Delete(int id);
 

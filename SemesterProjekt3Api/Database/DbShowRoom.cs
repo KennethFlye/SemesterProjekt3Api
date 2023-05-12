@@ -25,7 +25,7 @@ namespace SemesterProjekt3Api.Database
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ShowRoom> GetAll()
+        public List<ShowRoom> GetAll()
         {
             DBConnection dbCon = DBConnection.GetInstance();
             SqlConnection sqlCon = dbCon.GetConnection();

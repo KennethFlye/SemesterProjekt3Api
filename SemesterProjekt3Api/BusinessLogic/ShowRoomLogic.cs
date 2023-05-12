@@ -13,7 +13,7 @@ namespace SemesterProjekt3Api.BusinessLogic
             
             try
             {
-                foundList = (List<ShowRoom>?)_dbShowRoom.GetAll();
+                foundList = _dbShowRoom.GetAll();
             }
             catch (InvalidOperationException)
             {
