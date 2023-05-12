@@ -150,15 +150,24 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(19)] //works once
+        [InlineData(19)] //try int 24
         public void TestDeleteShowingByShowingId(int showingIdToDelete)
         {
             //Arrange
-
+            var deletableShowing = _showingLogic.GetShowingByShowingId(showingIdToDelete); //we need to see if the showingid exists in the database
+            
             //Act
             var result = _showingLogic.DeleteShowingByShowingId(showingIdToDelete);
 
-            Assert.True(result);
+            if(deletableShowing != null)
+            {
+                //Assert
+                Assert.True(result); //showing is deleted
+            }
+            else
+            {
+                Assert.False(result); //showing does not exist and therefore is not deleted
+            }
         }
 
         public void Dispose()
