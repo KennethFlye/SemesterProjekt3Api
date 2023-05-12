@@ -142,5 +142,29 @@ namespace SemesterProjekt3Api.BusinessLogic
 
             return isComplete;
         }
+
+        public bool DeleteMovieInfoById(int movieInfoId)
+        {
+            bool isComplete;
+            try
+            {
+                isComplete = _dbMovie.DeleteMovieInfoById(movieInfoId);
+            }
+            catch (InvalidOperationException) { isComplete = false; }
+
+            return isComplete;
+        }
+
+        public bool DeleteMovieCopyById(int movieCopyId)
+        {
+            bool isComplete;
+            try
+            {
+                isComplete = _dbMovie.DeleteMovieCopyById(movieCopyId);
+            }
+            catch (InvalidOperationException) { isComplete = false; }
+
+            return isComplete;
+        }
     }
 }
