@@ -11,10 +11,7 @@ namespace SemesterProjekt3Api.Database
         private string _getSeatTaken = "select * from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
         
         private string _getShowingByShowingIdQuery = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.showingId = @insertedShowingId AND Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
-        //private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, showRoomId, movieCopyId FROM Showing";
         private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
-        //private string _getShowRoomForShowingQuery = "SELECT ShowRoom.roomNumber FROM ShowRoom WHERE ShowRoom.roomNumber = @showingShowRoomId";
-        //private string _getMovieCopyForShowingQuery = "SELECT MovieCopy.copyId FROM MovieCopy WHERE MovieCopy.copyId = @showingMovieCopyId";
 
         private string _getSeatsByShowingId = "select BookingSeat.bookingId, seatId from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and Booking.showingId = @sId";
         private string _addNewShowing = "INSERT INTO [Showing] (startTime, isKidFriendly, showRoomId, movieCopyId) VALUES (@newStartTime, @newIsKidFriendly, @newShowRoomId, @newMovieCopyId)";
@@ -103,8 +100,6 @@ namespace SemesterProjekt3Api.Database
                     roomNumber = foundAllShowings[i].ShowRoom.RoomNumber
                 }).ToList();
             }
-
-            //List<Showing> foundShowingsList = sqlConnection.Query<Showing>(_getAllShowings).ToList();
 
             return foundAllShowings;
         }
