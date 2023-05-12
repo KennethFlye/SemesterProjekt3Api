@@ -11,9 +11,10 @@ namespace SemesterProjekt3Api.Database
         private string _getSeatTaken = "select * from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
         
         private string _getShowingByShowingIdQuery = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.showingId = @insertedShowingId AND Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
-        private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, showRoomId, movieCopyId FROM Showing";
-        private string _getShowRoomForShowingQuery = "SELECT ShowRoom.roomNumber FROM ShowRoom WHERE ShowRoom.roomNumber = @showingShowRoomId";
-        private string _getMovieCopyForShowingQuery = "SELECT MovieCopy.copyId FROM MovieCopy WHERE MovieCopy.copyId = @showingMovieCopyId";
+        //private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, showRoomId, movieCopyId FROM Showing";
+        private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
+        //private string _getShowRoomForShowingQuery = "SELECT ShowRoom.roomNumber FROM ShowRoom WHERE ShowRoom.roomNumber = @showingShowRoomId";
+        //private string _getMovieCopyForShowingQuery = "SELECT MovieCopy.copyId FROM MovieCopy WHERE MovieCopy.copyId = @showingMovieCopyId";
 
         private string _getSeatsByShowingId = "select BookingSeat.bookingId, seatId from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and Booking.showingId = @sId";
         private string _addNewShowing = "INSERT INTO [Showing] (startTime, isKidFriendly, showRoomId, movieCopyId) VALUES (@newStartTime, @newIsKidFriendly, @newShowRoomId, @newMovieCopyId)";
@@ -87,40 +88,25 @@ namespace SemesterProjekt3Api.Database
             DBConnection dbConnection = DBConnection.GetInstance();
             SqlConnection sqlConnection = dbConnection.GetConnection();
 
-            List<Showing> foundShowingsList = sqlConnection.Query<Showing>(_getAllShowings).ToList();
-            //if(foundShowingsList.Count > 0)
-            //{
+            List<Showing> foundAllShowings = sqlConnection.Query<Showing, MovieCopy, MovieInfo, ShowRoom, Showing>(_getAllShowings, (showing, movieCopy, movieInfo, showRoom) =>
+            {
+                movieCopy.MovieType = movieInfo;
+                showing.MovieCopy = movieCopy;
+                showing.ShowRoom = showRoom;
+                return showing;
+            }, splitOn: "copyId, infoId, roomNumber").ToList(); 
 
-            //    foundShowingsList.ForEach(showing =>
-            //    {
-            //        var showRoomIdParam = new { showingShowRoomId = showing.ShowRoom.RoomNumber };
-            //        var movieCopyParam = new { showingMovieCopyId = showing.MovieCopy.copyId };
-            //        var foundShowRoomId = sqlConnection.Query<int>(_getShowRoomForShowingQuery, showRoomIdParam).FirstOrDefault();
-            //        var foundMovieCopyId = sqlConnection.Query<int>(_getMovieCopyForShowingQuery, movieCopyParam).FirstOrDefault();
+            for(int i = 0; i < foundAllShowings.Count; i++)
+            {
+                foundAllShowings[i].ShowRoom.Seats = sqlConnection.Query<Seat>(_getSeatsByShowRoomId, new
+                {
+                    roomNumber = foundAllShowings[i].ShowRoom.RoomNumber
+                }).ToList();
+            }
 
-            //        foreach (var item in foundShowingsList)
-            //        {
-            //            if(foundShowRoomId == item.ShowRoom.RoomNumber)
-            //            {
-            //                showing.ShowRoom.RoomNumber = item.ShowRoom.RoomNumber; //may have to be shortened to object.ShowRoom
-            //            }
-            //            if(foundMovieCopyId == item.MovieCopy.copyId)
-            //            {
-            //                showing.MovieCopy.copyId = item.MovieCopy.copyId;
-            //            }
-            //        }
-            //    });
+            //List<Showing> foundShowingsList = sqlConnection.Query<Showing>(_getAllShowings).ToList();
 
-                //foreach(var showing in foundShowingsList)
-                //{
-                //    sqlConnection.Query<int>(_getShowRoomAndMovieCopyForShowingQuery, new
-                //    {
-                //        showingShowRoomId = queryShowRoomId,
-                //        showingMovieCopyId = queryMovieCopyId
-                //    });
-                //}
-            //}
-            return foundShowingsList;
+            return foundAllShowings;
         }
 
         internal bool UpdateShowing(Showing updatedShowing)
