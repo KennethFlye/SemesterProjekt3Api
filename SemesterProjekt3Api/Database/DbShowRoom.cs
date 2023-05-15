@@ -8,7 +8,7 @@ namespace SemesterProjekt3Api.Database
 {
     public class DbShowRoom : ICRUD<ShowRoom>
     {
-        private string _getAllShowRooms = "select ShowRoom.roomNumber, ShowRoom.capacity FROM ShowRoom";
+        private string _getAllShowRooms = "SELECT roomNumber, capacity, seatId, rowNumber, seatNumber, showRoomId FROM ShowRoom, Seat WHERE roomNumber = showRoomId";
 
         public bool Create(ShowRoom entity)
         {
@@ -30,7 +30,16 @@ namespace SemesterProjekt3Api.Database
             DBConnection dbCon = DBConnection.GetInstance();
             SqlConnection sqlCon = dbCon.GetConnection();
 
-            List<ShowRoom> getAllShowRooms = sqlCon.Query<ShowRoom>(_getAllShowRooms).ToList();
+            List<ShowRoom> getAllShowRooms = sqlCon.Query<ShowRoom, Seat, ShowRoom>(_getAllShowRooms, (showRoom, seat) =>
+            {
+                showRoom.Seats = new List<Seat>();
+                return showRoom;
+            }, splitOn: "capacity").ToList();
+
+            for(int i = 0; i < getAllShowRooms.Count; i++)
+            {
+                //getAllShowRooms[i].Seats.Add(...)
+            }
 
             return getAllShowRooms;
         }
