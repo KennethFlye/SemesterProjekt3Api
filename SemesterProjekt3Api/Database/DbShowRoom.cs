@@ -8,7 +8,8 @@ namespace SemesterProjekt3Api.Database
 {
     public class DbShowRoom : ICRUD<ShowRoom>
     {
-        private string _getAllShowRooms = "SELECT roomNumber, capacity, seatId, rowNumber, seatNumber, showRoomId FROM ShowRoom, Seat WHERE roomNumber = showRoomId";
+        //private string _getAllShowRooms = "SELECT roomNumber, capacity, seatId, rowNumber, seatNumber, showRoomId FROM ShowRoom, Seat WHERE roomNumber = showRoomId";
+        private string _getAllShowRooms = "SELECT * from ShowRoom";
 
         public bool Create(ShowRoom entity)
         {
