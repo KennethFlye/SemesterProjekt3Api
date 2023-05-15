@@ -4,12 +4,13 @@ using SemesterProjekt3Api.Model;
 
 namespace SemesterProjekt3Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ShowRoomsController : ControllerBase
     {
-        private ShowRoomLogic _showRoomLogic;
+        private ShowRoomLogic _showRoomLogic = new ShowRoomLogic();
 
         [HttpGet]
-        [Route("")]
         public IActionResult Index()
         {
             List<ShowRoom>? foundList = _showRoomLogic.GetShowRoomsList();
