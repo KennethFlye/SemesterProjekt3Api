@@ -30,16 +30,18 @@ namespace SemesterProjekt3Api.Database
             DBConnection dbCon = DBConnection.GetInstance();
             SqlConnection sqlCon = dbCon.GetConnection();
 
-            List<ShowRoom> getAllShowRooms = sqlCon.Query<ShowRoom, Seat, ShowRoom>(_getAllShowRooms, (showRoom, seat) =>
-            {
-                showRoom.Seats = new List<Seat>();
-                return showRoom;
-            }, splitOn: "capacity").ToList();
+            List<ShowRoom> getAllShowRooms = sqlCon.Query<ShowRoom>(_getAllShowRooms).ToList();
 
-            for(int i = 0; i < getAllShowRooms.Count; i++)
-            {
-                //getAllShowRooms[i].Seats.Add(...)
-            }
+            //List <ShowRoom> getAllShowRooms = sqlCon.Query<ShowRoom, Seat, ShowRoom>(_getAllShowRooms, (showRoom, seat) =>
+            //{
+            //    showRoom.Seats = new List<Seat>();
+            //    return showRoom;
+            //}, splitOn: "capacity").ToList();
+
+            //for(int i = 0; i < getAllShowRooms.Count; i++)
+            //{
+            //    //getAllShowRooms[i].Seats.Add(...)
+            //}
 
             return getAllShowRooms;
         }
