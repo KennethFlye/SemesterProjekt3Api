@@ -30,9 +30,8 @@ namespace SemesterProjekt3Api.Database
 
         internal bool IsSeatTaken(int showingId, int seatId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
-            return connection.QuerySingleOrDefault<bool>(_getSeatTaken, new { sId = showingId, seatId = seatId });
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
+            return dbCon.QuerySingle<bool>(_getSeatTaken, new { sId = showingId, seatId = seatId });
         }
 
         internal List<Seat> GetBookedSeats(int showingId)

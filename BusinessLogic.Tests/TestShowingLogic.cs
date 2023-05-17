@@ -16,20 +16,34 @@ namespace BusinessLogic.Tests
         }
 
 
-        [Theory(Skip = "Needs to be corrected. Invalid values should return booked or exception. Valid should do the check - maybe add if/else statement")] 
+        [Theory]
         [InlineData(-1, -1)]
         [InlineData(0, 0)]
         [InlineData(1, 1)]
+        [InlineData(3, 26)]
+        [InlineData(15, 26)]
         public void TestIsSeatTaken(int showingId, int seatId)
         {
             //Arrange
+            var comp = _showingLogic.GetBookedSeatsByShowingId(showingId);
 
             //Act
             var result = _showingLogic.IsSeatTaken(showingId, seatId);
 
             //Assert
-            Assert.False(result);
-
+            if (!result) 
+            {
+                //if seat to be booked and already booked seats are not in conflict we expect the id to not be in the booked seats list
+                for (int i = 0; i < comp.Count; i++)
+                {
+                    Assert.NotEqual(seatId, comp[0].SeatId);
+                    Assert.Equal("", result.ToString());
+                }
+            }
+            else
+            {
+                Assert.True(result);
+            }
         }
 
         [Theory]
