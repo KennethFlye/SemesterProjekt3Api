@@ -1,7 +1,6 @@
 ﻿using Dapper;
-using Microsoft.Win32.SafeHandles;
-using SemesterProjekt3Api.Interfaces;
 using SemesterProjekt3Api.Model;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace SemesterProjekt3Api.Database
@@ -30,38 +29,44 @@ namespace SemesterProjekt3Api.Database
         private string _deleteMovieInfoByIdQuery = "DELETE FROM MovieInfo WHERE infoId = @infoId";
         private string _deleteMovieCopyByIdQuery = "DELETE FROM MovieCopy WHERE copyId = @copyId";
 
+        private readonly string? _connectionString;
+
+        public DbMovie()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfiguration configuration = builder.Build();
+            _connectionString = configuration.GetConnectionString("VestbjergBio");
+        }
+
         internal List<MovieInfo> GetMovieInfos()
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            List<MovieInfo> foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
+            List<MovieInfo> foundInfos = dbCon.Query<MovieInfo>(_getMovieInfoQuery).ToList();
 
             return foundInfos;
         }
 
         internal List<MovieCopy> GetMovieCopies()
         {
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
-
-            List<MovieInfo> foundInfos = connection.Query<MovieInfo>(_getMovieInfoQuery).ToList();
+            List<MovieInfo> foundInfos = dbCon.Query<MovieInfo>(_getMovieInfoQuery).ToList();
 
             if (foundInfos.Count == 0)
             {
-                //Exception?
+                throw new NotImplementedException();
             }
 
 
 
-            List<MovieCopy> foundCopies = connection.Query<MovieCopy>(_getMovieCopyQuery).ToList();
+            List<MovieCopy> foundCopies = dbCon.Query<MovieCopy>(_getMovieCopyQuery).ToList();
 
             //https://www.learndapper.com/parameters
             foundCopies.ForEach(movieCopy =>
             {
                 var parameters = new { copyId = movieCopy.copyId };
-                int movieInfoId = connection.Query<int>(_getMovieInfoByCopyIdQuery, parameters).First();
+                int movieInfoId = dbCon.Query<int>(_getMovieInfoByCopyIdQuery, parameters).First();
                 bool found = false;
 
                 for (int i = 0; i < foundInfos.Count() && found == false; i++)
@@ -79,16 +84,15 @@ namespace SemesterProjekt3Api.Database
 
         internal List<Showing> GetShowingsByMovieInfoId(int movieId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
             //Gem infoId som parameter
             var parameterInfoId = new { infoId = movieId };
 
             //Få den specifikke MovieInfo
-            MovieInfo foundInfo = connection.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, parameterInfoId).First();
+            MovieInfo foundInfo = dbCon.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, parameterInfoId).First();
             //Lav liste med alle MovieCopies som er tilsluttet til denne MovieInfo
-            List<MovieCopy> foundCopies = connection.Query<MovieCopy>(_getMovieCopiesByInfoIdQuery, parameterInfoId).ToList();
+            List<MovieCopy> foundCopies = dbCon.Query<MovieCopy>(_getMovieCopiesByInfoIdQuery, parameterInfoId).ToList();
 
             //Tilføj MovieInfo instansen til alle MovieCopies
             foundCopies.ForEach(movieCopy =>
@@ -97,12 +101,12 @@ namespace SemesterProjekt3Api.Database
             });
 
             //Få fat i alle ShowRooms og gem dem i en liste
-            List<ShowRoom> foundShowRooms = connection.Query<ShowRoom>(_getShowRoomsQuery).ToList();
+            List<ShowRoom> foundShowRooms = dbCon.Query<ShowRoom>(_getShowRoomsQuery).ToList();
 
             //Gem alle sæder til det specifikke ShowRoom og tilføj det til instansen
             foreach (ShowRoom element in foundShowRooms)
             {
-                List<Seat> foundSeats = connection.Query<Seat>(_getSeatsByShowRoomId, new { showRoomId = element.RoomNumber }).ToList();
+                List<Seat> foundSeats = dbCon.Query<Seat>(_getSeatsByShowRoomId, new { showRoomId = element.RoomNumber }).ToList();
                 element.Seats = foundSeats;
             }
 
@@ -116,7 +120,7 @@ namespace SemesterProjekt3Api.Database
             var ids = copyIds.ToArray<int>();
 
             //Gem alle showings der har de CopyIDs som blev tilføjet til listen tidligere i en liste
-            List<Showing> foundShowings = connection.Query<Showing>(_getShowingsByMovieCopyIdsQuery, new { Ids = ids }).ToList();
+            List<Showing> foundShowings = dbCon.Query<Showing>(_getShowingsByMovieCopyIdsQuery, new { Ids = ids }).ToList();
 
             //For hver showing gøres dette
             foundShowings.ForEach(showing =>
@@ -124,7 +128,7 @@ namespace SemesterProjekt3Api.Database
                 //Gemmer showingId'et for showing'en i en variabel
                 var parameterShowingId = new { showingId = showing.ShowingId };
                 //Gemmer movieCopyId'et og showRoomId'et vha. showingId'et
-                var result = connection.Query(_getCopyIdAndShowRoomIdByShowingIdQuery, parameterShowingId).Single();
+                var result = dbCon.Query(_getCopyIdAndShowRoomIdByShowingIdQuery, parameterShowingId).Single();
 
                 int movieCopyId = result.movieCopyId;
                 int showRoomId = result.showRoomId;
@@ -159,18 +163,16 @@ namespace SemesterProjekt3Api.Database
 
         public MovieInfo? GetMovieInfoById(int infoId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            return connection.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, new {infoId = infoId}).First();
+            return dbCon.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, new {infoId = infoId}).First();
         }
 
         internal MovieCopy? GetMovieCopyById(int copyId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            var movieResult = connection.Query<MovieCopy, MovieInfo, MovieCopy>(_getMovieCopyByCopyIdQuery, (movieCopy, movieInfo) =>
+            var movieResult = dbCon.Query<MovieCopy, MovieInfo, MovieCopy>(_getMovieCopyByCopyIdQuery, (movieCopy, movieInfo) =>
             {
                 movieCopy.MovieType = movieInfo;
                 return movieCopy;
@@ -183,24 +185,22 @@ namespace SemesterProjekt3Api.Database
 
         public int AddMovieInfoToDatabase(MovieInfo newMovieInfo)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
             int newInfoId = 0;
 
-            newInfoId = connection.ExecuteScalar<int>(_insertMovieInfoQuery, newMovieInfo);
+            newInfoId = dbCon.ExecuteScalar<int>(_insertMovieInfoQuery, newMovieInfo);
 
             return newInfoId;
         }
 
         public int AddMovieCopyToDatabase(MovieCopy newMovieCopy)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
             int newCopyId = 0;
 
-            newCopyId = connection.QuerySingle<int>(_insertMovieCopyQuery, new
+            newCopyId = dbCon.QuerySingle<int>(_insertMovieCopyQuery, new
             {
                 Language = newMovieCopy.Language,
                 Is3D = newMovieCopy.Is3D,
@@ -213,20 +213,18 @@ namespace SemesterProjekt3Api.Database
 
         public bool UpdateMovieInfoInDatabase(MovieInfo updatedMovieInfo)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            int rowsChanged = connection.Execute(_updateMovieInfoQuery, updatedMovieInfo);
+            int rowsChanged = dbCon.Execute(_updateMovieInfoQuery, updatedMovieInfo);
 
             return rowsChanged > 0;
         }
 
         public bool UpdateMovieCopyInDatabase(MovieCopy updatedMovieCopy)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            int rowsChanged = connection.Execute(_updateMovieCopyQuery, new
+            int rowsChanged = dbCon.Execute(_updateMovieCopyQuery, new
             {
                 Language = updatedMovieCopy.Language,
                 Is3D = updatedMovieCopy.Is3D,
@@ -240,20 +238,18 @@ namespace SemesterProjekt3Api.Database
 
         public bool DeleteMovieInfoById(int movieInfoId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            int rowsChanged = connection.Execute(_deleteMovieInfoByIdQuery, new { infoId = movieInfoId });
+            int rowsChanged = dbCon.Execute(_deleteMovieInfoByIdQuery, new { infoId = movieInfoId });
 
             return rowsChanged > 0;
         }
 
         public bool DeleteMovieCopyById(int movieCopyId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            int rowsChanged = connection.Execute(_deleteMovieCopyByIdQuery, new { copyId = movieCopyId });
+            int rowsChanged = dbCon.Execute(_deleteMovieCopyByIdQuery, new { copyId = movieCopyId });
 
             return rowsChanged > 0;
         }

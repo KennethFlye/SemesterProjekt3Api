@@ -1,7 +1,6 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Primitives;
-using SemesterProjekt3Api.BusinessLogic;
 using SemesterProjekt3Api.Model;
+using System.Data;
 using System.Data.SqlClient;
 using System.Transactions;
 
@@ -11,19 +10,25 @@ namespace SemesterProjekt3Api.Database
     {
         private string _selectBookingByIdQuery = "select * from Booking where bookingId = @bookingId";
 
+        private readonly string? _connectionString;
+
+        public DbBooking()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfiguration configuration = builder.Build();
+            _connectionString = configuration.GetConnectionString("VestbjergBio");
+        }
 
         public void AddBooking(Booking newBooking)
         {
             using (var scopeTransaction = new TransactionScope())
             {
-               
-                DBConnection dbc = DBConnection.GetInstance();
-                SqlConnection sqlConnection = dbc.GetConnection();
+                using IDbConnection dbCon = new SqlConnection(_connectionString);
 
                 int idReturn = 0;
                 string sql = "INSERT INTO [Booking] (timeOfPurchase, total, customerPhone, showingId) OUTPUT INSERTED.bookingId VALUES (@timeOfPurchase, @total, @phone, @sId)";
                
-                idReturn = sqlConnection.QuerySingle<int>(
+                idReturn = dbCon.QuerySingle<int>(
                 sql,
                 new
                 {
@@ -36,7 +41,7 @@ namespace SemesterProjekt3Api.Database
                 //Insert Seat
                 foreach (Seat seat in newBooking.BookedSeats)
                 {
-                    sqlConnection.Query(
+                    dbCon.Query(
                         "INSERT INTO [BookingSeat] (bookingId, seatId) VALUES (@BookingId, @SeatId)",
                         new
                         {
@@ -52,29 +57,30 @@ namespace SemesterProjekt3Api.Database
 
         internal Booking GetBookingById(int _bookingId)
         {
-            DBConnection dbc = DBConnection.GetInstance();
-            SqlConnection sqlConnection = dbc.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
             DbShowing _dbShowing = new();
 
-            Booking booking = sqlConnection.QueryFirst<Booking>(_selectBookingByIdQuery, new { BookingId = _bookingId });
-            int showingId = sqlConnection.QuerySingle<int>("select showingId from Booking where bookingId = @bookingId",new {bookingId = _bookingId});
+            Booking booking = dbCon.QueryFirst<Booking>(_selectBookingByIdQuery, new { BookingId = _bookingId });
+            int showingId = dbCon.QuerySingle<int>("select showingId from Booking where bookingId = @bookingId",new {bookingId = _bookingId});
 
             booking.Showing = _dbShowing.GetShowingByShowingId(showingId);
 
             string seatSql = "select * from Seat where seatId = ( select seatId from BookingSeat where bookingId = @id)";
-            booking.BookedSeats = sqlConnection.Query<Seat>(seatSql, new {id = booking.BookingId}).ToList();
+            booking.BookedSeats = dbCon.Query<Seat>(seatSql, new {id = booking.BookingId}).ToList();
 
             return booking;
         }
 
         internal List<Seat> GetSeatsByShowingId(int showingId) //check if used, Gets all seats, also unbooked
         {
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
+
             List<Seat> seats = new List<Seat>();
-            DBConnection dbc = DBConnection.GetInstance();
-            SqlConnection sqlConnection = dbc.GetConnection();
             string sql = "select * from Seat where showRoomId = (select Showing.showRoomId from Showing where showingId = @id)";
-            seats = sqlConnection.Query<Seat>(sql, new {id = showingId}).ToList();
+            
+            seats = dbCon.Query<Seat>(sql, new {id = showingId}).ToList();
+
             return seats;
         }
     }
