@@ -11,12 +11,12 @@ namespace SemesterProjekt3Api.Database
         private string _getMovieCopyQuery = "SELECT copyId, language, is3D, price FROM MovieCopy";
         private string _getMovieInfoByCopyIdQuery = "SELECT movieinfoId FROM MovieCopy WHERE copyId = @copyId";
 
+        private string _getMovieCopiesQuery = "SELECT copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieCopy, MovieInfo WHERE MovieCopy.movieInfoId = MovieInfo.infoId";
+
         private string _getMovieInfoByInfoIdQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieInfo WHERE MovieInfo.infoId = @infoId";
-        private string _getMovieCopiesByInfoIdQuery = "SELECT copyId, language, is3D, price FROM MovieCopy WHERE MovieCopy.movieInfoId = @infoId";
-        private string _getShowRoomsQuery = "SELECT roomNumber, capacity FROM ShowRoom";
         private string _getSeatsByShowRoomId = "SELECT seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE showRoomId = @showRoomId";
-        private string _getShowingsByMovieCopyIdsQuery = "SELECT showingId, startTime, isKidFriendly, showRoomId FROM Showing WHERE Showing.movieCopyId IN @Ids";
-        private string _getCopyIdAndShowRoomIdByShowingIdQuery = "SELECT movieCopyId, showRoomId FROM Showing WHERE showingId = @showingId";
+
+        private string _getShowingsByInfoId = "SELECT * FROM Showing, ShowRoom, MovieCopy, MovieInfo WHERE Showing.showRoomId = ShowRoom.roomNumber AND Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND MovieInfo.infoId = @infoId";
 
         private string _getMovieCopyByCopyIdQuery = "SELECT copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieCopy, MovieInfo WHERE copyId = @copyId AND MovieCopy.movieinfoId = MovieInfo.infoId";
 
@@ -38,7 +38,7 @@ namespace SemesterProjekt3Api.Database
             _connectionString = configuration.GetConnectionString("VestbjergBio");
         }
 
-        internal List<MovieInfo> GetMovieInfos()
+        public List<MovieInfo> GetMovieInfos()
         {
             using IDbConnection dbCon = new SqlConnection(_connectionString);
 
@@ -47,117 +47,37 @@ namespace SemesterProjekt3Api.Database
             return foundInfos;
         }
 
-        internal List<MovieCopy> GetMovieCopies()
+        public List<MovieCopy> GetMovieCopies()
         {
+
             using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            List<MovieInfo> foundInfos = dbCon.Query<MovieInfo>(_getMovieInfoQuery).ToList();
-
-            if (foundInfos.Count == 0)
+            List<MovieCopy> foundCopies = dbCon.Query<MovieCopy, MovieInfo, MovieCopy>(_getMovieCopiesQuery, (movieCopy, movieInfo) =>
             {
-                throw new NotImplementedException();
-            }
-
-
-
-            List<MovieCopy> foundCopies = dbCon.Query<MovieCopy>(_getMovieCopyQuery).ToList();
-
-            //https://www.learndapper.com/parameters
-            foundCopies.ForEach(movieCopy =>
-            {
-                var parameters = new { copyId = movieCopy.copyId };
-                int movieInfoId = dbCon.Query<int>(_getMovieInfoByCopyIdQuery, parameters).First();
-                bool found = false;
-
-                for (int i = 0; i < foundInfos.Count() && found == false; i++)
-                {
-                    if (movieInfoId == foundInfos[i].infoId)
-                    {
-                        movieCopy.MovieType = foundInfos[i];
-                        found = true;
-                    }
-                }
-            });
-
+                movieCopy.MovieType = movieInfo;
+                return movieCopy;
+            }, splitOn:"infoId").ToList();
+            
             return foundCopies;
         }
 
-        internal List<Showing> GetShowingsByMovieInfoId(int movieId)
+        public List<Showing> GetShowingsByMovieInfoId(int movieId)
         {
             using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            //Gem infoId som parameter
-            var parameterInfoId = new { infoId = movieId };
-
-            //Få den specifikke MovieInfo
-            MovieInfo foundInfo = dbCon.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, parameterInfoId).First();
-            //Lav liste med alle MovieCopies som er tilsluttet til denne MovieInfo
-            List<MovieCopy> foundCopies = dbCon.Query<MovieCopy>(_getMovieCopiesByInfoIdQuery, parameterInfoId).ToList();
-
-            //Tilføj MovieInfo instansen til alle MovieCopies
-            foundCopies.ForEach(movieCopy =>
+            List<Showing> foundShowings = dbCon.Query<Showing, ShowRoom, MovieCopy, MovieInfo, Showing>(_getShowingsByInfoId, (showing, showRoom, movieCopy, movieInfo) =>
             {
-                movieCopy.MovieType = foundInfo;
-            });
+                movieCopy.MovieType = movieInfo;
+                showing.MovieCopy = movieCopy;
 
-            //Få fat i alle ShowRooms og gem dem i en liste
-            List<ShowRoom> foundShowRooms = dbCon.Query<ShowRoom>(_getShowRoomsQuery).ToList();
+                using IDbConnection dbCon2 = new SqlConnection(_connectionString);
+                showRoom.Seats = dbCon2.Query<Seat>(_getSeatsByShowRoomId, new { showRoomId = showRoom.RoomNumber }).ToList();
 
-            //Gem alle sæder til det specifikke ShowRoom og tilføj det til instansen
-            foreach (ShowRoom element in foundShowRooms)
-            {
-                List<Seat> foundSeats = dbCon.Query<Seat>(_getSeatsByShowRoomId, new { showRoomId = element.RoomNumber }).ToList();
-                element.Seats = foundSeats;
-            }
+                showing.ShowRoom = showRoom;
 
-            //Kan laves meget smartere. Men Laver en liste med alle CopyIds i de MovieCopies som blev fundet tidligere
-            List<int> copyIds = new List<int>();
-            foundCopies.ForEach(copy =>
-            {
-                copyIds.Add(copy.copyId);
-            });
-            //Konverterer listen til et IntArray
-            var ids = copyIds.ToArray<int>();
+                return showing;
+            }, new { infoId = movieId }, splitOn: "roomNumber, copyId, infoId").ToList();
 
-            //Gem alle showings der har de CopyIDs som blev tilføjet til listen tidligere i en liste
-            List<Showing> foundShowings = dbCon.Query<Showing>(_getShowingsByMovieCopyIdsQuery, new { Ids = ids }).ToList();
-
-            //For hver showing gøres dette
-            foundShowings.ForEach(showing =>
-            {
-                //Gemmer showingId'et for showing'en i en variabel
-                var parameterShowingId = new { showingId = showing.ShowingId };
-                //Gemmer movieCopyId'et og showRoomId'et vha. showingId'et
-                var result = dbCon.Query(_getCopyIdAndShowRoomIdByShowingIdQuery, parameterShowingId).Single();
-
-                int movieCopyId = result.movieCopyId;
-                int showRoomId = result.showRoomId;
-
-                bool copyFound = false;
-                bool showRoomFound = false;
-
-                for (int i = 0; i < foundCopies.Count && !copyFound; i++)
-                {
-                    //Find rigtig copy og tilføj til showing
-                    if (foundCopies[i].copyId == movieCopyId)
-                    {
-                        showing.MovieCopy = foundCopies[i];
-                        copyFound = true;
-                    }
-                }
-
-                for (int i = 0; i < foundShowRooms.Count && !showRoomFound; i++)
-                {
-                    //Find rigtig showRoom og tilføj til showing
-                    if (foundShowRooms[i].RoomNumber == showRoomId)
-                    {
-                        showing.ShowRoom = foundShowRooms[i];
-                        showRoomFound = true;
-                    }
-
-                }
-            });
-            //Returner de fuldendte showings
             return foundShowings;
         }
 
@@ -168,7 +88,7 @@ namespace SemesterProjekt3Api.Database
             return dbCon.Query<MovieInfo>(_getMovieInfoByInfoIdQuery, new {infoId = infoId}).First();
         }
 
-        internal MovieCopy? GetMovieCopyById(int copyId)
+        public MovieCopy? GetMovieCopyById(int copyId)
         {
             using IDbConnection dbCon = new SqlConnection(_connectionString);
 
