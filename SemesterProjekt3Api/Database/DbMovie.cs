@@ -8,8 +8,6 @@ namespace SemesterProjekt3Api.Database
     public class DbMovie
     {
         private string _getMovieInfoQuery = "SELECT infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieInfo";
-        private string _getMovieCopyQuery = "SELECT copyId, language, is3D, price FROM MovieCopy";
-        private string _getMovieInfoByCopyIdQuery = "SELECT movieinfoId FROM MovieCopy WHERE copyId = @copyId";
 
         private string _getMovieCopiesQuery = "SELECT copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing FROM MovieCopy, MovieInfo WHERE MovieCopy.movieInfoId = MovieInfo.infoId";
 
