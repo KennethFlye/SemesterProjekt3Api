@@ -22,5 +22,21 @@ namespace SemesterProjekt3Api.BusinessLogic
 
             return foundList;
         }
+
+        public ShowRoom getSpecificShowRoom(int showRoomId)
+        {
+            ShowRoom foundShowRoom = null;
+
+            try
+            {
+                foundShowRoom = _dbShowRoom.Get(showRoomId);
+            }
+            catch (InvalidOperationException)
+            {
+                foundShowRoom = new ShowRoom();
+            }
+
+            return foundShowRoom;
+        }
     }
 }
