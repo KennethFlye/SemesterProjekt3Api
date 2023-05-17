@@ -37,7 +37,6 @@ namespace BusinessLogic.Tests
                 for (int i = 0; i < comp.Count; i++)
                 {
                     Assert.NotEqual(seatId, comp[0].SeatId);
-                    Assert.Equal("", result.ToString());
                 }
             }
             else
@@ -75,27 +74,31 @@ namespace BusinessLogic.Tests
             }
         }
 
-        [Fact]
-        public void TestAddShowing()
+        [Theory]
+        [InlineData(-1, 3)]
+        [InlineData(0, 3)]
+        [InlineData(1, 3)]
+        public void TestAddShowing(int showRoomNumber, int movieCopyId)
         {
             //Arrange
             Showing mockShowing = new Showing();
-            mockShowing.StartTime = DateTime.Now;
+            mockShowing.StartTime = DateTime.Now; //could also be set by param, but not relevant right now
             mockShowing.IsKidFriendly = true;
 
             ShowRoom mockShowRoom = new ShowRoom();
-            mockShowRoom.RoomNumber = 2;
+            mockShowRoom.RoomNumber = showRoomNumber;
             mockShowing.ShowRoom = mockShowRoom;
 
             MovieCopy mockMovieCopy = new MovieCopy();
-            mockMovieCopy.copyId = 4;
-            mockShowing.MovieCopy = mockMovieCopy;
+            mockMovieCopy.copyId = movieCopyId;
+            mockShowing.MovieCopy = mockMovieCopy; //DRY make into class/memberdata
 
             //Act
             var result = _showingLogic.AddShowing(mockShowing);
 
             //Assert
             Assert.True(result);
+            Assert.False(result);
         }
 
         [Theory]
@@ -147,17 +150,47 @@ namespace BusinessLogic.Tests
             }
         }
 
-        [Fact(Skip = "Implement when making mockShowing into classdata object")]
-        public void TestUpdateSpecificShowingByShowingId()
+        [Theory]
+        [InlineData(-1, 1, 3)]
+        [InlineData(0, 1, 3)]
+        [InlineData(1, 1, 3)]
+        [InlineData(25, 1, 3)]
+        public void TestUpdateSpecificShowingByShowingId(int showingIdToUpdate, int showRoomNumber, int movieCopyId)
         {
             //Arrange
-            Showing mockShowing = new Showing(); //could reuse mock from addShowing
+            Showing mockShowing = new Showing();
+            mockShowing.ShowingId = showingIdToUpdate;
+            mockShowing.StartTime = DateTime.Now; //could also be set by param, but not relevant right now
+            mockShowing.IsKidFriendly = true;
+
+            ShowRoom mockShowRoom = new ShowRoom();
+            mockShowRoom.RoomNumber = showRoomNumber;
+            mockShowing.ShowRoom = mockShowRoom;
+
+            MovieCopy mockMovieCopy = new MovieCopy();
+            mockMovieCopy.copyId = movieCopyId;
+            mockShowing.MovieCopy = mockMovieCopy; //DRY make into class/memberdata
+
+            var showingExists = _showingLogic.GetShowingByShowingId(showingIdToUpdate);
+            ShowRoomLogic srLog = new ShowRoomLogic();
+            var showRoomExists = srLog.getSpecificShowRoom(showRoomNumber);
+            MovieLogic movLog = new MovieLogic();
+            MovieCopy copy;
+            var movieExists = movLog.GetMovieCopyById(movieCopyId, out copy);
+
 
             //Act
             var result = _showingLogic.UpdateSpecificShowing(mockShowing);
 
             //Assert
-            Assert.True(result);
+            if (showingExists != null && showRoomExists != null && movieExists)
+            {
+                Assert.True(result);
+            }
+            else
+            {
+                Assert.False(result);
+            }
         }
 
         [Theory]

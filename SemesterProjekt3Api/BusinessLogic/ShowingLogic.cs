@@ -1,5 +1,6 @@
 ﻿using SemesterProjekt3Api.Database;
 using SemesterProjekt3Api.Model;
+using System.Data.SqlClient;
 
 namespace SemesterProjekt3Api.BusinessLogic
 {
@@ -87,6 +88,10 @@ namespace SemesterProjekt3Api.BusinessLogic
                 success = _dbShowing.UpdateShowing(showingToUpdate);
             }
             catch (InvalidOperationException)
+            {
+                success = false;
+            }
+            catch (SqlException)
             {
                 success = false;
             }
