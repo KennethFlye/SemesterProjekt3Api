@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using SemesterProjekt3Api.Model;
+using System.Data;
 using System.Data.SqlClient;
 using System.Transactions;
 
@@ -18,6 +19,15 @@ namespace SemesterProjekt3Api.Database
         private string _updateShowing = "UPDATE [Showing] SET startTime = @updatedStartTime, isKidFriendly = @updatedIsKidFriendly, showRoomId = @updatedShowRoomId, movieCopyId = @updatedMovieCopyId WHERE showingId = @showingIdToUpdate";
         private string _deleteShowingByShowingId = "DELETE FROM [Showing] WHERE showingId = @showingIdToDelete";
 
+        private readonly string? _connectionString;
+
+        public DbShowing()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfiguration configuration = builder.Build();
+            _connectionString = configuration.GetConnectionString("VestbjergBio");
+        }
+
         internal bool IsSeatTaken(int showingId, int seatId)
         {
             DBConnection dbConnection = DBConnection.GetInstance();
@@ -27,9 +37,9 @@ namespace SemesterProjekt3Api.Database
 
         internal List<Seat> GetBookedSeats(int showingId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
-            List<Seat> seats = connection.Query<Seat>(_getSeatsByShowingId, new { sId = showingId }).ToList();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
+
+            List<Seat> seats = dbCon.Query<Seat>(_getSeatsByShowingId, new { sId = showingId }).ToList();
 
             return seats;
         }
@@ -39,10 +49,9 @@ namespace SemesterProjekt3Api.Database
             bool success = false;
             using(var scope = new TransactionScope())
             {
-                DBConnection dbConnection = DBConnection.GetInstance();
-                SqlConnection sqlConnection = dbConnection.GetConnection();
+                using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-                int rowsAffected = sqlConnection.Execute(_addNewShowing, new
+                int rowsAffected = dbCon.Execute(_addNewShowing, new
                 {
                     newStartTime = newShowing.StartTime,
                     newIsKidFriendly = newShowing.IsKidFriendly,
@@ -60,10 +69,9 @@ namespace SemesterProjekt3Api.Database
 
         internal Showing GetShowingByShowingId(int showingId)
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection connection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            var showingResult = connection.Query<Showing, MovieCopy, MovieInfo, ShowRoom, Showing>(_getShowingByShowingIdQuery, (showing, movieCopy, movieInfo, showRoom) =>
+            var showingResult = dbCon.Query<Showing, MovieCopy, MovieInfo, ShowRoom, Showing>(_getShowingByShowingIdQuery, (showing, movieCopy, movieInfo, showRoom) =>
             {
                 movieCopy.MovieType = movieInfo;
                 showing.MovieCopy = movieCopy;
@@ -74,7 +82,7 @@ namespace SemesterProjekt3Api.Database
             Showing? foundShowing = showingResult.FirstOrDefault();
             if(foundShowing != null)
             {
-                foundShowing.ShowRoom.Seats = connection.Query<Seat>(_getSeatsByShowRoomId, new { roomNumber = foundShowing.ShowRoom.RoomNumber }).ToList();
+                foundShowing.ShowRoom.Seats = dbCon.Query<Seat>(_getSeatsByShowRoomId, new { roomNumber = foundShowing.ShowRoom.RoomNumber }).ToList();
             }
 
             return foundShowing;
@@ -82,10 +90,9 @@ namespace SemesterProjekt3Api.Database
 
         internal List<Showing> GetAllShowings()
         {
-            DBConnection dbConnection = DBConnection.GetInstance();
-            SqlConnection sqlConnection = dbConnection.GetConnection();
+            using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-            List<Showing> foundAllShowings = sqlConnection.Query<Showing, MovieCopy, MovieInfo, ShowRoom, Showing>(_getAllShowings, (showing, movieCopy, movieInfo, showRoom) =>
+            List<Showing> foundAllShowings = dbCon.Query<Showing, MovieCopy, MovieInfo, ShowRoom, Showing>(_getAllShowings, (showing, movieCopy, movieInfo, showRoom) =>
             {
                 movieCopy.MovieType = movieInfo;
                 showing.MovieCopy = movieCopy;
@@ -95,7 +102,7 @@ namespace SemesterProjekt3Api.Database
 
             for(int i = 0; i < foundAllShowings.Count; i++)
             {
-                foundAllShowings[i].ShowRoom.Seats = sqlConnection.Query<Seat>(_getSeatsByShowRoomId, new
+                foundAllShowings[i].ShowRoom.Seats = dbCon.Query<Seat>(_getSeatsByShowRoomId, new
                 {
                     roomNumber = foundAllShowings[i].ShowRoom.RoomNumber
                 }).ToList();
@@ -109,10 +116,9 @@ namespace SemesterProjekt3Api.Database
             bool success = false;
             using(var scope = new TransactionScope())
             {
-                DBConnection dbConnection = DBConnection.GetInstance();
-                SqlConnection sqlConnection = dbConnection.GetConnection();
+                using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-                int rowsAffected = sqlConnection.Execute(_updateShowing, new
+                int rowsAffected = dbCon.Execute(_updateShowing, new
                 {
                     updatedStartTime = updatedShowing.StartTime,
                     updatedIsKidFriendly = updatedShowing.IsKidFriendly,
@@ -136,10 +142,9 @@ namespace SemesterProjekt3Api.Database
             bool success = false;
             using(var scope = new TransactionScope())
             {
-                DBConnection dbConnection = DBConnection.GetInstance();
-                SqlConnection sqlConnection = dbConnection.GetConnection();
+                using IDbConnection dbCon = new SqlConnection(_connectionString);
 
-                int rowsAffected = sqlConnection.Execute(_deleteShowingByShowingId, new { showingIdToDelete = showingId });
+                int rowsAffected = dbCon.Execute(_deleteShowingByShowingId, new { showingIdToDelete = showingId });
                 if(rowsAffected > 0)
                 {
                     success = true;
