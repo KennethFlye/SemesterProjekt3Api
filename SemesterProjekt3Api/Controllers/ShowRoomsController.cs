@@ -29,5 +29,22 @@ namespace SemesterProjekt3Api.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("{showRoomId}")]
+        public IActionResult GetSpecificShowRoom(int showRoomId)
+        {
+            ShowRoom foundShowRoom = _showRoomLogic.getSpecificShowRoom(showRoomId);
+
+            if(foundShowRoom != null)
+            {
+                return Ok(foundShowRoom);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        
     }
 }
