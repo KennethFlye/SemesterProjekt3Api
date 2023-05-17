@@ -10,7 +10,7 @@ namespace BusinessLogic.Tests
     public class TestBookingLogic : IDisposable
     {
 
-        private BookingLogic _bookingLogic;
+        private BookingLogic? _bookingLogic;
 
         public TestBookingLogic()
         {
@@ -18,8 +18,13 @@ namespace BusinessLogic.Tests
         }
 
 
-        [Fact(Skip = "Crashes due to the IsSeatsBooked check i think")]
-        public void TestPostNewBooking()
+        [Theory(Skip = "Tests that should succeed in adding a booking are still only able to run once")]
+        [InlineData(-1, 10)]
+        [InlineData(0, 10)]
+        [InlineData(1, 0)]
+        [InlineData(3, -1)]
+        [InlineData(10, 8)]
+        public void TestPostNewBooking(int showingId, int seatId)
         {
             //Arrange - make a mock booking
             Booking mockBooking = new Booking(); //Should be ClassData in best case scenario
@@ -29,39 +34,30 @@ namespace BusinessLogic.Tests
             mockBooking.CustomerPhone = "50529894"; //value lent from database
 
             Showing mockShowing = new Showing();
-            mockShowing.ShowingId = 15; //value lent from database
+            mockShowing.ShowingId = showingId; 
 
             mockBooking.Showing = mockShowing;
             mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
 
-            Seat mockSeat1 = new Seat();
-            Seat mockSeat2 = new Seat();
-            mockSeat1.SeatId = 9;
-            mockSeat2.SeatId = 10;
+            Seat mockSeat = new Seat();
+            mockSeat.SeatId = seatId;
 
             List<Seat> mockSeatsList = new List<Seat>();
-            mockSeatsList.Add(mockSeat1);
-            mockSeatsList.Add(mockSeat2);
+            mockSeatsList.Add(mockSeat);
 
             mockBooking.BookedSeats = mockSeatsList; //we cant add an empty list of seats to be booked
-
 
             //Act - try posting
             var success = _bookingLogic.AddBooking(mockBooking);
 
-            //Assert - see if it passes/that no exceptions are thrown
-            Assert.True(success);
-
-            //OBS should also check for invalid bookings
-            //var throwsException = Record.Exception(success);
-            //if (!throwsException)
-            //{
-            //    Assert.True(success);
-            //}
-            //else
-            //{
-            //    Assert.Throws<SystemException>(sucess);
-            //}
+            if(!_bookingLogic.IsSeatsTaken(showingId, mockSeatsList))
+            {
+                Assert.True(success);
+            }
+            else
+            {
+                Assert.False(success);
+            }
 
         }
 
