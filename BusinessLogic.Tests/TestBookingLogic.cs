@@ -119,40 +119,4 @@ namespace BusinessLogic.Tests
         }
 
     }
-
-    //public class MockBooking : IEnumerable<object[]>
-    //{
-    //    public IEnumerator<object[]> GetEnumerator()
-    //    {
-    //        yield return new object[] {
-    //            new Booking {
-    //                TimeOfPurchase = DateTime.Now,
-    //                Total = 999,
-    //                CustomerPhone = "50529894", //value lent from database
-    //                Showing = new Showing().ShowingId = 15,
-
-    //        //Showing mockShowing = new Showing();
-    //        //mockShowing.ShowingId = 15; //value lent from database
-
-    //        //mockBooking.Showing = mockShowing;
-    //        //mockBooking.Showing.ShowingId = mockShowing.ShowingId; //the whole mockShowing object is made to avoid nullreference exceptions
-
-    //        //Seat mockSeat1 = new Seat();
-    //        //Seat mockSeat2 = new Seat();
-    //        //mockSeat1.SeatId = 9;
-    //        //mockSeat2.SeatId = 10;
-
-    //        //List<Seat> mockSeatsList = new List<Seat>();
-    //        //mockSeatsList.Add(mockSeat1);
-    //        //mockSeatsList.Add(mockSeat2);
-
-    //        //mockBooking.BookedSeats = mockSeatsList;
-    //    } };
-    //    }
-
-    //    IEnumerator IEnumerable.GetEnumerator()
-    //    {
-    //        return GetEnumerator();
-    //    }
-    //}
 }
