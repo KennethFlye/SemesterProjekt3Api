@@ -15,7 +15,7 @@ namespace SemesterProjekt3Api.Database
         private string _getShowRoomByIdQuery = "SELECT roomNumber, capacity FROM ShowRoom WHERE roomNumber = @roomNumber";
         private string _getSeatsByShowRoomId = "SELECT seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE showRoomId = @roomNumber";
 
-        private string _connectionString;
+        private readonly string? _connectionString;
 
         public DbShowRoom()
         {
@@ -36,8 +36,7 @@ namespace SemesterProjekt3Api.Database
 
         public ShowRoom Get(int id)
         {
-            using IDbConnection connection =
-            new SqlConnection(_connectionString);
+            using IDbConnection connection = new SqlConnection(_connectionString);
 
             ShowRoom foundShowRoom = connection.Query<ShowRoom>(_getShowRoomByIdQuery, new { roomNumber = id }).First();
 
@@ -50,8 +49,7 @@ namespace SemesterProjekt3Api.Database
 
         public List<ShowRoom> GetAll()
         {
-            using IDbConnection connection =
-            new SqlConnection(_connectionString);
+            using IDbConnection connection = new SqlConnection(_connectionString);
 
             List<ShowRoom> getAllShowRooms = connection.Query<ShowRoom>(_getAllShowRooms).ToList();
 
