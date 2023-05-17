@@ -1,5 +1,6 @@
 ﻿using SemesterProjekt3Api.Database;
 using SemesterProjekt3Api.Model;
+using System.Data.SqlClient;
 
 namespace SemesterProjekt3Api.BusinessLogic
 {
@@ -20,6 +21,10 @@ namespace SemesterProjekt3Api.BusinessLogic
                     success = true; //always returns true now? make dbbooking return a bool
                 }
                 catch (InvalidOperationException)
+                {
+                    success = false;
+                }
+                catch (SqlException)
                 {
                     success = false;
                 }

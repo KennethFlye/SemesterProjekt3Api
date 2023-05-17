@@ -14,10 +14,11 @@ namespace BusinessLogic.Tests
         }
 
 
-        [Theory(Skip = "Invalid values run fine. Valid should be corrected (returns nullreferenceexception)/look at return values in method calls")]
+        [Theory]//(Skip = "Invalid values run fine. Valid should be corrected (returns nullreferenceexception)/look at return values in method calls")]
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(16)]
         public void TestGetSeatBySeatId(int seatId)
         {
             //Arrange
