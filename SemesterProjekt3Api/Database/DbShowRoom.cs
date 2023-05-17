@@ -3,7 +3,6 @@ using SemesterProjekt3Api.Interfaces;
 using SemesterProjekt3Api.Model;
 using System.Data;
 using System.Data.SqlClient;
-using System.Transactions;
 
 namespace SemesterProjekt3Api.Database
 {
