@@ -9,7 +9,7 @@ namespace SemesterProjekt3Api.Database
     public class DbShowing
     {
         private string _getSeatsByShowRoomId = "SELECT seatId, rowNumber, seatNumber, showRoomId FROM Seat WHERE showRoomId = @roomNumber";
-        private string _getSeatTaken = "select * from BookingSeat, Booking where BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
+        private string _getSeatTaken = "SELECT COUNT(Booking.bookingId) FROM BookingSeat, Booking WHERE BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
         
         private string _getShowingByShowingIdQuery = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, movieUrl, currentlyShowing, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.showingId = @insertedShowingId AND Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
         private string _getAllShowings = "SELECT showingId, startTime, isKidFriendly, copyId, language, is3D, price, infoId, title, length, genre, pgRating, premiereDate, roomNumber, capacity FROM Showing, MovieInfo, MovieCopy, ShowRoom WHERE Showing.movieCopyId = MovieCopy.copyId AND MovieCopy.movieinfoId = MovieInfo.infoId AND Showing.showRoomId = ShowRoom.roomNumber";
@@ -31,7 +31,7 @@ namespace SemesterProjekt3Api.Database
         internal bool IsSeatTaken(int showingId, int seatId)
         {
             using IDbConnection dbCon = new SqlConnection(_connectionString);
-            return dbCon.QuerySingle<bool>(_getSeatTaken, new { sId = showingId, seatId = seatId });
+            return dbCon.QuerySingle<int>(_getSeatTaken, new { sId = showingId, seatId = seatId }) != 0;
         }
 
         internal List<Seat> GetBookedSeats(int showingId)
