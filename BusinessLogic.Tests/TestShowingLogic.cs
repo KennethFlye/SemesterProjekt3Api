@@ -197,16 +197,17 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(19)] //try int 24
+        [InlineData(12)] //try 13
         public void TestDeleteShowingByShowingId(int showingIdToDelete)
         {
             //Arrange
             var deletableShowing = _showingLogic.GetShowingByShowingId(showingIdToDelete); //we need to see if the showingid exists in the database
-            
+            var hasBookedSeats = _showingLogic.GetBookedSeatsByShowingId(showingIdToDelete); //we want to know if the showing is associated with any bookings
+
             //Act
             var result = _showingLogic.DeleteShowingByShowingId(showingIdToDelete);
 
-            if(deletableShowing != null)
+            if(deletableShowing != null && hasBookedSeats.Count < 1)
             {
                 //Assert
                 Assert.True(result); //showing is deleted
