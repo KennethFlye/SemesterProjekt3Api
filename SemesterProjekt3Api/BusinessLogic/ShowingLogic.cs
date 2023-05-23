@@ -46,7 +46,10 @@ namespace SemesterProjekt3Api.BusinessLogic
             catch(InvalidOperationException)
             {
                 success = false;
-                //throw the exception istg
+            }
+            catch (SqlException)
+            {
+                success = false;
             }
             return success;
         }
@@ -76,10 +79,6 @@ namespace SemesterProjekt3Api.BusinessLogic
             {
                 //maybe nullreferenceexception
                 foundShowingsList = new List<Showing>(); //return an empty list
-            }
-            catch (SqlException)
-            {
-                foundShowingsList = new List<Showing>();
             }
             return foundShowingsList;
         }
