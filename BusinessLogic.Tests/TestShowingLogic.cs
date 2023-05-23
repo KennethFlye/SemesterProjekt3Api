@@ -93,12 +93,22 @@ namespace BusinessLogic.Tests
             mockMovieCopy.copyId = movieCopyId;
             mockShowing.MovieCopy = mockMovieCopy; //DRY make into class/memberdata
 
+            var showings = _showingLogic.GetShowingsList();
+            int showingsCount = showings.Count;
+
             //Act
             var result = _showingLogic.AddShowing(mockShowing);
 
-            //Assert
-            Assert.True(result);
-            Assert.False(result);
+            if (result)
+            {
+                //Assert
+                Assert.Equal(showingsCount +1, _showingLogic.GetShowingsList().Count);
+            }
+            else
+            {
+                //Assert
+                Assert.Equal(showingsCount, _showingLogic.GetShowingsList().Count);
+            }
         }
 
         [Theory]
