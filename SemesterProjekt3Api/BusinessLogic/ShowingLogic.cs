@@ -109,6 +109,10 @@ namespace SemesterProjekt3Api.BusinessLogic
             {
                 success = false;
             }
+            catch (SqlException)
+            {
+                success = false;
+            }
             return success;
         }
       
