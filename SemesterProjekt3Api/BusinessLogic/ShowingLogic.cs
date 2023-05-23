@@ -77,6 +77,10 @@ namespace SemesterProjekt3Api.BusinessLogic
                 //maybe nullreferenceexception
                 foundShowingsList = new List<Showing>(); //return an empty list
             }
+            catch (SqlException)
+            {
+                foundShowingsList = new List<Showing>();
+            }
             return foundShowingsList;
         }
 
