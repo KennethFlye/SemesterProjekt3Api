@@ -9,6 +9,7 @@ namespace SemesterProjekt3Api.Database
     public class DbBooking
     {
         private string _selectBookingByIdQuery = "select * from Booking where bookingId = @bookingId";
+        private string _getSeatTaken = "SELECT COUNT(Booking.bookingId) FROM BookingSeat, Booking WHERE BookingSeat.bookingId = Booking.bookingId and showingId = @sId and seatId = @seatId";
 
         private readonly string? _connectionString;
 
@@ -19,11 +20,25 @@ namespace SemesterProjekt3Api.Database
             _connectionString = configuration.GetConnectionString("VestbjergBio");
         }
 
-        public void AddBooking(Booking newBooking)
+        public bool AddBooking(Booking newBooking)
         {
-            using (var scopeTransaction = new TransactionScope())
+            bool isInserted;
+
+            var transactionOptions = new TransactionOptions();
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.Serializable;
+            using (var scopeTransaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
             {
                 using IDbConnection dbCon = new SqlConnection(_connectionString);
+
+                for(int i = 0; i <newBooking.BookedSeats.Count; i++)
+                {
+                    if(dbCon.QuerySingle<int>(_getSeatTaken, new { sId = newBooking.Showing.ShowingId, seatId = newBooking.BookedSeats[i].SeatId }) != 0)
+                    {
+                        isInserted = false;
+                        scopeTransaction.Dispose();
+                        return false;
+                    }
+                }
 
                 int idReturn = 0;
                 string sql = "INSERT INTO [Booking] (timeOfPurchase, total, customerPhone, showingId) OUTPUT INSERTED.bookingId VALUES (@timeOfPurchase, @total, @phone, @sId)";
@@ -49,10 +64,13 @@ namespace SemesterProjekt3Api.Database
                             SeatId = seat.SeatId
                         });
                 }
-            
-                scopeTransaction.Complete();
 
+                //isInserted = true;
+                scopeTransaction.Complete();
+                
             }
+            return true;
+            //return isInserted;
         }
 
         internal Booking GetBookingById(int _bookingId)

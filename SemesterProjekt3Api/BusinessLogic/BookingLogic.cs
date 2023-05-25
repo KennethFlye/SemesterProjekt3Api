@@ -12,13 +12,13 @@ namespace SemesterProjekt3Api.BusinessLogic
         public bool AddBooking(Booking booking)
         {
             bool success = false;
-            if (IsSeatsTaken(booking.Showing.ShowingId, booking.BookedSeats))
-            {
+            //if (IsSeatsTaken(booking.Showing.ShowingId, booking.BookedSeats))
+            //{
 
                 try
                 {
-                    _dbBooking.AddBooking(booking);
-                    success = true; //always returns true now? make dbbooking return a bool
+                    success = _dbBooking.AddBooking(booking);
+                    //success = true; //always returns true now? make dbbooking return a bool
                 }
                 catch (InvalidOperationException)
                 {
@@ -28,11 +28,11 @@ namespace SemesterProjekt3Api.BusinessLogic
                 {
                     success = false;
                 }
-            }
-            else
-            {
-                success = false; //seats were already booked
-            }
+            //}
+            //else
+            //{
+            //    success = false; //seats were already booked
+            //}
             return success; //could also write method with 3 returns, one for succes, one for null and one for exception,
                             //and then let the controller return actionresults based on that
         }
