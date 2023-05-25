@@ -93,12 +93,22 @@ namespace BusinessLogic.Tests
             mockMovieCopy.copyId = movieCopyId;
             mockShowing.MovieCopy = mockMovieCopy; //DRY make into class/memberdata
 
+            var showings = _showingLogic.GetShowingsList();
+            int showingsCount = showings.Count;
+
             //Act
             var result = _showingLogic.AddShowing(mockShowing);
 
-            //Assert
-            Assert.True(result);
-            Assert.False(result);
+            if (result)
+            {
+                //Assert
+                Assert.Equal(showingsCount +1, _showingLogic.GetShowingsList().Count);
+            }
+            else
+            {
+                //Assert
+                Assert.Equal(showingsCount, _showingLogic.GetShowingsList().Count);
+            }
         }
 
         [Theory]
@@ -197,16 +207,17 @@ namespace BusinessLogic.Tests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(19)] //try int 24
+        [InlineData(12)] //try 13
         public void TestDeleteShowingByShowingId(int showingIdToDelete)
         {
             //Arrange
             var deletableShowing = _showingLogic.GetShowingByShowingId(showingIdToDelete); //we need to see if the showingid exists in the database
-            
+            var hasBookedSeats = _showingLogic.GetBookedSeatsByShowingId(showingIdToDelete); //we want to know if the showing is associated with any bookings
+
             //Act
             var result = _showingLogic.DeleteShowingByShowingId(showingIdToDelete);
 
-            if(deletableShowing != null)
+            if(deletableShowing != null && hasBookedSeats.Count < 1)
             {
                 //Assert
                 Assert.True(result); //showing is deleted

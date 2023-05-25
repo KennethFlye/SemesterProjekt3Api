@@ -46,7 +46,10 @@ namespace SemesterProjekt3Api.BusinessLogic
             catch(InvalidOperationException)
             {
                 success = false;
-                //throw the exception istg
+            }
+            catch (SqlException)
+            {
+                success = false;
             }
             return success;
         }
@@ -106,6 +109,10 @@ namespace SemesterProjekt3Api.BusinessLogic
                 success = _dbShowing.DeleteShowingByShowingId(showingIdToDelete);
             }
             catch (InvalidOperationException)
+            {
+                success = false;
+            }
+            catch (SqlException)
             {
                 success = false;
             }
