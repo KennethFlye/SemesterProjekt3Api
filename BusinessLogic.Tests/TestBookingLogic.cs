@@ -18,12 +18,12 @@ namespace BusinessLogic.Tests
         }
 
 
-        [Theory]//(Skip = "Tests that should succeed in adding a booking are still only able to run once")]
+        [Theory]
         [InlineData(-1, 10)]
         [InlineData(0, 10)]
         [InlineData(1, 0)]
         [InlineData(3, -1)]
-        [InlineData(11, 8)] //try 11, 9
+        [InlineData(11, 11)] //try 7, 11
         public void TestPostNewBooking(int showingId, int seatId)
         {
             //Arrange - make a mock booking
@@ -52,12 +52,12 @@ namespace BusinessLogic.Tests
             Showing foundShowing = showingLogic.GetShowingByShowingId(showingId);
             SeatLogic seatLogic = new SeatLogic();
             Seat foundSeat = seatLogic.GetSeatBySeatId(seatId);
-            bool isSeatTaken = _bookingLogic.IsSeatsTaken(showingId, mockSeatsList);
+            bool isSeatTaken = showingLogic.IsSeatTaken(showingId, seatId);
 
             //Act - try posting
             var success = _bookingLogic.AddBooking(mockBooking);
 
-            if(foundShowing != null && foundSeat != null && !isSeatTaken)
+            if (foundShowing != null && foundSeat != null && !isSeatTaken)
             {
                 Assert.True(success);
             }
