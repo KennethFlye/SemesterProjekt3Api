@@ -109,6 +109,9 @@ namespace BusinessLogic.Tests
                 //Assert
                 Assert.Equal(showingsCount, _showingLogic.GetShowingsList().Count);
             }
+
+            //cleanup should be implemented
+            //_showingLogic.DeleteShowingByShowingId(mockShowing.ShowingId);
         }
 
         [Theory]
