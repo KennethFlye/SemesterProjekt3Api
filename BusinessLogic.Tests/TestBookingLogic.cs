@@ -30,7 +30,7 @@ namespace BusinessLogic.Tests
             Booking mockBooking = new Booking(); //Should be ClassData in best case scenario
 
             mockBooking.TimeOfPurchase = DateTime.Now;
-            mockBooking.Total = 999;
+            mockBooking.Total = 999; //easier to find when looking through db
             mockBooking.CustomerPhone = "50529894"; //value lent from database
 
             Showing mockShowing = new Showing();
@@ -47,10 +47,17 @@ namespace BusinessLogic.Tests
 
             mockBooking.BookedSeats = mockSeatsList; //we cant add an empty list of seats to be booked
 
+            //Make some checks
+            ShowingLogic showingLogic = new ShowingLogic();
+            Showing foundShowing = showingLogic.GetShowingByShowingId(showingId);
+            SeatLogic seatLogic = new SeatLogic();
+            Seat foundSeat = seatLogic.GetSeatBySeatId(seatId);
+            bool isSeatTaken = _bookingLogic.IsSeatsTaken(showingId, mockSeatsList);
+
             //Act - try posting
             var success = _bookingLogic.AddBooking(mockBooking);
 
-            if(!_bookingLogic.IsSeatsTaken(showingId, mockSeatsList))
+            if(foundShowing != null && foundSeat != null && !isSeatTaken)
             {
                 Assert.True(success);
             }

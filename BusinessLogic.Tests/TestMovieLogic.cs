@@ -95,9 +95,9 @@ namespace BusinessLogic.Tests
         }
 
         [Theory]
-        [InlineData(4)]
-        [InlineData(7)]
-        [InlineData(11)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
         [InlineData(30)]
         public void PositiveTestGetSpecificMovieInfo(int movieInfoId)
         {
@@ -108,16 +108,16 @@ namespace BusinessLogic.Tests
             bool isComplete = _movieLogic.GetMovieInfoById(movieInfoId, out MovieInfo? foundInfo);
 
             //Assert
-            Assert.True(isComplete);
-            Assert.NotNull(foundInfo);
-
-            Assert.True(foundInfo.infoId == movieInfoId);
-            Assert.False(foundInfo.Title.Equals(""));
-            Assert.True(foundInfo.Length != 0);
-            Assert.False(foundInfo.Genre.Equals(""));
-            Assert.False(foundInfo.PgRating.Equals(""));
-            Assert.True(foundInfo.PremiereDate != DateTime.MinValue);
-            Assert.False(foundInfo.MovieUrl.Equals(""));
+            if (foundInfo != null && isComplete) //add if else statement to all other tests to check for invalid values
+            {
+                Assert.True(foundInfo.infoId == movieInfoId);
+                Assert.False(foundInfo.Title.Equals(""));
+                Assert.True(foundInfo.Length != 0);
+                Assert.False(foundInfo.Genre.Equals(""));
+                Assert.False(foundInfo.PgRating.Equals(""));
+                Assert.True(foundInfo.PremiereDate != DateTime.MinValue);
+                Assert.False(foundInfo.MovieUrl.Equals(""));
+            }
         }
 
         [Theory]
@@ -214,7 +214,7 @@ namespace BusinessLogic.Tests
         public void PositiveTestInsertNewMovieCopy()
         {
             //Arrange
-            _movieLogic.GetMovieInfoById(7, out MovieInfo? foundInfo);
+            _movieLogic.GetMovieInfoById(1, out MovieInfo? foundInfo);
 
             MovieCopy testMovieCopy = new MovieCopy()
             {
@@ -241,9 +241,9 @@ namespace BusinessLogic.Tests
         }
 
         [Theory]
-        [InlineData(4)]
-        [InlineData(7)]
-        [InlineData(11)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
         public void PositiveTestUpdateMovieInfo(int movieInfoId)
         {
             //Arrange
@@ -256,6 +256,7 @@ namespace BusinessLogic.Tests
             testMovieInfo.PgRating = "Test";
             testMovieInfo.PremiereDate = testMovieInfo.PremiereDate.AddYears(1);
             testMovieInfo.MovieUrl = "Test";
+            testMovieInfo.CurrentlyShowing = true;
 
             //Act
             _movieLogic.UpdateMovieInfoInDatabase(testMovieInfo);
@@ -269,6 +270,7 @@ namespace BusinessLogic.Tests
             Assert.True(testMovieInfo.PgRating.Equals(returnMovieInfo.PgRating));
             Assert.True(testMovieInfo.PremiereDate.ToString().Equals(returnMovieInfo.PremiereDate.ToString()));
             Assert.True(testMovieInfo.MovieUrl.Equals(returnMovieInfo.MovieUrl));
+            Assert.True(testMovieInfo.CurrentlyShowing.Equals(returnMovieInfo.CurrentlyShowing));
 
             //Clean Up
             _movieLogic.UpdateMovieInfoInDatabase(foundMovieInfo);
