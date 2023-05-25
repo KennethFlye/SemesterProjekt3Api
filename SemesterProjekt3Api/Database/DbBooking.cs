@@ -22,8 +22,6 @@ namespace SemesterProjekt3Api.Database
 
         public bool AddBooking(Booking newBooking)
         {
-            bool isInserted;
-
             var transactionOptions = new TransactionOptions();
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.Serializable;
             using (var scopeTransaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
@@ -34,7 +32,6 @@ namespace SemesterProjekt3Api.Database
                 {
                     if(dbCon.QuerySingle<int>(_getSeatTaken, new { sId = newBooking.Showing.ShowingId, seatId = newBooking.BookedSeats[i].SeatId }) != 0)
                     {
-                        isInserted = false;
                         scopeTransaction.Dispose();
                         return false;
                     }
@@ -64,13 +61,10 @@ namespace SemesterProjekt3Api.Database
                             SeatId = seat.SeatId
                         });
                 }
-
-                //isInserted = true;
                 scopeTransaction.Complete();
                 
             }
             return true;
-            //return isInserted;
         }
 
         internal Booking GetBookingById(int _bookingId)
